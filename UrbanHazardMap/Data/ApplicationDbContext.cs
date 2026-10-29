@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using UrbanHazardMap.Models;
 
 namespace UrbanHazardMap.Data
 {
@@ -9,5 +10,7 @@ namespace UrbanHazardMap.Data
             : base(options)
         {
         }
+
+        public DbSet<IssueReport> IssueReportsq { get; set; }
     }
 }
