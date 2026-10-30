@@ -11,6 +11,7 @@ namespace UrbanHazardMap.Data
         {
         }
 
-        public DbSet<IssueReport> IssueReportsq { get; set; }
+        public DbSet<IssueReport> IssueReports { get; set; }
+        public DbSet<Category> Categorys { get; set; }
     }
 }
