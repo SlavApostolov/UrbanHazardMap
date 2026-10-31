@@ -1,0 +1,122 @@
+
+/* Dashboard background */
+.dashboard-container {
+    background-color: #f5f7fa;
+    min-height: 85vh;
+    padding: 24px;
+}
+
+/* Sidebar */
+.filter-panel {
+    background: #ffffff;
+    border: 1px solid #e8edf2;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(20, 40, 70, 0.05);
+    height: 100%;
+}
+
+.filter-title {
+    color: #1f354b;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.filter-subtitle {
+    color: #8492a6;
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+}
+
+/* Category filters */
+.category-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 10px;
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+.category-filter:hover {
+    background-color: #f3f7f9;
+}
+
+.category-filter label {
+    color: #405268;
+    cursor: pointer;
+    font-size: 0.92rem;
+}
+
+/* Report button */
+.report-button {
+    width: 100%;
+    background: #168b75;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 13px;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+.report-button:hover {
+    background: #11715f;
+    color: white;
+}
+
+/* Map */
+.map-panel {
+    background: white;
+    padding: 8px;
+    border-radius: 16px;
+    border: 1px solid #e8edf2;
+    box-shadow: 0 4px 16px rgba(20, 40, 70, 0.05);
+}
+
+#map {
+    height: 75vh;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+    .dashboard-container {
+        padding: 12px;
+    }
+
+    #map {
+        height: 60vh;
+    }
+}
+
+
+.filter-heading {
+    color: #1f354b;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.filter-panel hr {
+    border-color: #e8edf2;
+    margin: 20px 0;
+}
+
+.category-filter input {
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+    accent-color: #168b75;
+}
+
+.category-filter label {
+    margin: 0;
+}
+
+.map-panel {
+    height: 100%;
+}
