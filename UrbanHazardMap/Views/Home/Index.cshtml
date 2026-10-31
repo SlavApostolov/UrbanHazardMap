@@ -1,8 +1,71 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/dashboard.css"
+          asp-append-version="true" />
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard-container">
+    <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-3 mb-3">
+            <div class="filter-panel">
+
+                <h4 class="filter-title">UrbanHazardMap</h4>
+                <p class="filter-subtitle">Explore and report urban issues</p>
+
+                <hr />
+
+                <h5 class="filter-heading">Filter by Category</h5>
+
+                <div class="category-filter">
+                    <input class="form-check-input" type="checkbox" id="roads">
+                    <label for="roads">Road Infrastructure</label>
+                </div>
+
+                <div class="category-filter">
+                    <input class="form-check-input" type="checkbox" id="buildings">
+                    <label for="buildings">Buildings and Structures</label>
+                </div>
+
+                <div class="category-filter">
+                    <input class="form-check-input" type="checkbox" id="utilities">
+                    <label for="utilities">Public Utilities</label>
+                </div>
+
+                <hr />
+
+                <button class="report-button">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Report Issue
+                </button>
+
+            </div>
+        </div>
+
+        <!-- Map -->
+        <div class="col-md-9 col-lg-9">
+            <div class="map-panel">
+                <div id="map"></div>
+            </div>
+        </div>
+
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([42.6977, 23.3219], 12);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+    </script>
+}
