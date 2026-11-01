@@ -15,5 +15,14 @@ namespace UrbanHazardMap.Models
 
         [Required, MaxLength(7)] //Cause it is #123456 = so 7 characters
         public string MarkedHexColor { get; set; }
+
+
+        public int InstitutionId { get; set; }
+
+        public Institution? Institution { get; set; } = null!;
+
+        public ICollection<IssueReport> IssueReports { get; set; }
+    = new List<IssueReport>();
+
     }
 }
