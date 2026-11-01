@@ -25,7 +25,7 @@ namespace UrbanHazardMap.Models
         public string Phone { get; set; }
 
         
- public Category? Category { get; set; } = null!;
+        public Category Category { get; set; } = null!;
 
     }
 }

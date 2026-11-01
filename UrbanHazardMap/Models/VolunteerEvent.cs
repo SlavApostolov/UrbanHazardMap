@@ -18,5 +18,9 @@ namespace UrbanHazardMap.Models
         public DateTime EventDate { get; set; }
         public int? MaxParticipants { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public int IssueReportId { get; set; }
+        [Required]
+        public IssueReport IssueReport { get; set; }
     }
 }

@@ -359,6 +359,9 @@ namespace UrbanHazardMap.Migrations
                     b.Property<DateTime>("EventDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("IssueReportId")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("MaxParticipants")
                         .HasColumnType("integer");
 
@@ -368,6 +371,8 @@ namespace UrbanHazardMap.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IssueReportId");
 
                     b.ToTable("VolunteerEvents");
                 });
@@ -449,9 +454,26 @@ namespace UrbanHazardMap.Migrations
                     b.Navigation("Institution");
                 });
 
+            modelBuilder.Entity("UrbanHazardMap.Models.VolunteerEvent", b =>
+                {
+                    b.HasOne("UrbanHazardMap.Models.IssueReport", "IssueReport")
+                        .WithMany("VolunteerEvents")
+                        .HasForeignKey("IssueReportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IssueReport");
+                });
+
             modelBuilder.Entity("UrbanHazardMap.Models.Institution", b =>
                 {
-                    b.Navigation("Category");
+                    b.Navigation("Category")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("UrbanHazardMap.Models.IssueReport", b =>
+                {
+                    b.Navigation("VolunteerEvents");
                 });
 #pragma warning restore 612, 618
         }
