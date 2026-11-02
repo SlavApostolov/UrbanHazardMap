@@ -27,12 +27,14 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">How it works</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" href="#">Report a Hazard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="#">Volunteer Events</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
@@ -57,7 +59,23 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - UrbanHazardMap - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <p class="mb-1">
+                &copy; 2026 - UrbanHazardMap - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </p>
+            <p class="mb-1">
+                This project was created by students of the Technical University as part of the course
+                "Software Technology" in the academic year 2026/2027.
+            </p>
+            <p class="mb-1">
+                The team behind the project consists of students from ISN (Informatics and Software Technology):
+            </p>
+            <ul class="list-inline mb-0">
+                <li class="list-inline-item">Slav Apostolov</li>
+                <li class="list-inline-item">Martin Markov</li>
+                <li class="list-inline-item">Usein Halibriam</li>
+                <li class="list-inline-item">Petar Tanev</li>
+                <li class="list-inline-item">Rostislav Balabanov</li>
+            </ul>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
