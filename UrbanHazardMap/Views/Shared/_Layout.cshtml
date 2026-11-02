@@ -6,18 +6,16 @@
     <title>@ViewData["Title"] - UrbanHazardMap</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="" />
-@await RenderSectionAsync("Styles", required: false)
-<link rel="stylesheet" href="~/UrbanHazardMap.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
     <link rel="stylesheet" href="~/UrbanHazardMap.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow @(ViewData["FullWidth"] as bool? == true ? "" : "mb-3")">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">UrbanHazardMap</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -42,11 +40,20 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    @if (ViewData["FullWidth"] as bool? == true)
+    {
+        <main role="main">
             @RenderBody()
         </main>
-    </div>
+    }
+    else
+    {
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    }
 
     <footer class="border-top footer text-muted">
         <div class="container">
