@@ -1,8 +1,4 @@
 
-/* =========================================
-   URBAN HAZARD MAP - ABOUT PAGE
-========================================= */
-
 :root {
     --uhm-primary: #0f766e;
     --uhm-secondary: #14b8a6;
@@ -11,8 +7,6 @@
     --uhm-muted: #64748b;
     --uhm-bg: #f5f8fb;
 }
-
-/* HERO */
 
 .uhm-hero {
     position: relative;
@@ -139,8 +133,6 @@
     stroke-width: .8;
 }
 
-/* INTRODUCTION */
-
 .uhm-intro {
     max-width: 850px;
     padding-top: 85px;
@@ -171,8 +163,6 @@
     margin-top: 18px;
 }
 
-/* STEPS SECTION */
-
 .uhm-steps-section {
     padding: 65px 0 85px;
     background: var(--uhm-bg);
@@ -186,8 +176,6 @@
     color: var(--uhm-muted);
     margin-top: 12px;
 }
-
-/* STEP CARDS */
 
 .uhm-step-card {
     position: relative;
@@ -295,8 +283,6 @@
     background: #10b981;
 }
 
-/* CALL TO ACTION */
-
 .uhm-cta {
     padding-top: 70px;
     padding-bottom: 70px;
@@ -338,8 +324,6 @@
     stroke: rgba(255,255,255,.18);
     stroke-width: 1.1;
 }
-
-/* RESPONSIVE */
 
 @media (max-width: 768px) {
     .uhm-hero {

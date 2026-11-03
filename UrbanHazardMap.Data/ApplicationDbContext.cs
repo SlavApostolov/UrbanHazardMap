@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using UrbanHazardMap.Models;
+using UrbanHazardMap.Data.Models;
 
 namespace UrbanHazardMap.Data
 {

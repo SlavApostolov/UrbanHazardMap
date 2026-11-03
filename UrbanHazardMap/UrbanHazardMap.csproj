@@ -15,4 +15,9 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\UrbanHazardMap.Data\UrbanHazardMap.Data.csproj" />
+    <ProjectReference Include="..\UrbanHazardMap.Services\UrbanHazardMap.Services.csproj" />
+  </ItemGroup>
+
 </Project>

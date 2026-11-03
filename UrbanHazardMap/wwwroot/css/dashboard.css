@@ -1,12 +1,10 @@
 
-/* Dashboard background */
 .dashboard-container {
     background-color: #f5f7fa;
     min-height: 85vh;
     padding: 24px;
 }
 
-/* Sidebar */
 .filter-panel {
     background: #ffffff;
     border: 1px solid #e8edf2;
@@ -29,7 +27,6 @@
     margin-bottom: 24px;
 }
 
-/* Category filters */
 .category-filter {
     display: flex;
     align-items: center;
@@ -49,7 +46,6 @@
     font-size: 0.92rem;
 }
 
-/* Report button */
 .report-button {
     width: 100%;
     background: #168b75;
@@ -66,7 +62,6 @@
     color: white;
 }
 
-/* Map */
 .map-panel {
     background: white;
     padding: 8px;
@@ -82,7 +77,6 @@
     overflow: hidden;
 }
 
-/* Responsive */
 @media (max-width: 767px) {
     .dashboard-container {
         padding: 12px;

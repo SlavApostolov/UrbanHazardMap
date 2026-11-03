@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace UrbanHazardMap.Migrations
+namespace UrbanHazardMap.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialPostgreSQL : Migration

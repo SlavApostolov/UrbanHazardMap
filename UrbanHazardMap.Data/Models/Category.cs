@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace UrbanHazardMap.Models
+namespace UrbanHazardMap.Data.Models
 {
     public class Category
     {
