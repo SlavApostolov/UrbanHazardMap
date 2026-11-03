@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
-using UrbanHazardMap.Models;
+using UrbanHazardMap.Data.Models;
 
 namespace UrbanHazardMap.Data
 {
@@ -15,7 +15,6 @@ namespace UrbanHazardMap.Data
        
 public static async Task SeedDatabase(ApplicationDbContext context)
 {
-    // STEP 1: Seed institutions if they don't exist
 
     if (!await context.Institutions.AnyAsync())
     {
@@ -26,11 +25,7 @@ public static async Task SeedDatabase(ApplicationDbContext context)
         await context.SaveChangesAsync();
     }
 
-    // STEP 2: Retrieve institutions from the database
-
     var existingInstitutions = await context.Institutions.ToListAsync();
-
-    // STEP 3: Seed categories if they don't exist
 
     if (!await context.Categories.AnyAsync())
     {

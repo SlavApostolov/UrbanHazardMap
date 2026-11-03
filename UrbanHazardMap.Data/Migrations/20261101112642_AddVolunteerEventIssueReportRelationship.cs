@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace UrbanHazardMap.Migrations
+namespace UrbanHazardMap.Data.Migrations
 {
     /// <inheritdoc />
     public partial class AddVolunteerEventIssueReportRelationship : Migration

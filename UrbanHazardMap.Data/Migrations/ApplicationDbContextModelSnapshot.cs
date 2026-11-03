@@ -2,21 +2,18 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UrbanHazardMap.Data;
 
 #nullable disable
 
-namespace UrbanHazardMap.Migrations
+namespace UrbanHazardMap.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261101112642_AddVolunteerEventIssueReportRelationship")]
-    partial class AddVolunteerEventIssueReportRelationship
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +34,7 @@ namespace UrbanHazardMap.Migrations
 
                     b.HasIndex("IssueReportsId");
 
-                    b.ToTable("CategoryIssueReport");
+                    b.ToTable("CategoryIssueReport", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -240,7 +237,7 @@ namespace UrbanHazardMap.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("UrbanHazardMap.Models.Category", b =>
+            modelBuilder.Entity("UrbanHazardMap.Data.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -270,10 +267,10 @@ namespace UrbanHazardMap.Migrations
                     b.HasIndex("InstitutionId")
                         .IsUnique();
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
-            modelBuilder.Entity("UrbanHazardMap.Models.Institution", b =>
+            modelBuilder.Entity("UrbanHazardMap.Data.Models.Institution", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -301,10 +298,10 @@ namespace UrbanHazardMap.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Institutions");
+                    b.ToTable("Institutions", (string)null);
                 });
 
-            modelBuilder.Entity("UrbanHazardMap.Models.IssueReport", b =>
+            modelBuilder.Entity("UrbanHazardMap.Data.Models.IssueReport", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -340,10 +337,10 @@ namespace UrbanHazardMap.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IssueReports");
+                    b.ToTable("IssueReports", (string)null);
                 });
 
-            modelBuilder.Entity("UrbanHazardMap.Models.VolunteerEvent", b =>
+            modelBuilder.Entity("UrbanHazardMap.Data.Models.VolunteerEvent", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -377,18 +374,18 @@ namespace UrbanHazardMap.Migrations
 
                     b.HasIndex("IssueReportId");
 
-                    b.ToTable("VolunteerEvents");
+                    b.ToTable("VolunteerEvents", (string)null);
                 });
 
             modelBuilder.Entity("CategoryIssueReport", b =>
                 {
-                    b.HasOne("UrbanHazardMap.Models.Category", null)
+                    b.HasOne("UrbanHazardMap.Data.Models.Category", null)
                         .WithMany()
                         .HasForeignKey("CategoriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("UrbanHazardMap.Models.IssueReport", null)
+                    b.HasOne("UrbanHazardMap.Data.Models.IssueReport", null)
                         .WithMany()
                         .HasForeignKey("IssueReportsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -446,20 +443,20 @@ namespace UrbanHazardMap.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UrbanHazardMap.Models.Category", b =>
+            modelBuilder.Entity("UrbanHazardMap.Data.Models.Category", b =>
                 {
-                    b.HasOne("UrbanHazardMap.Models.Institution", "Institution")
+                    b.HasOne("UrbanHazardMap.Data.Models.Institution", "Institution")
                         .WithOne("Category")
-                        .HasForeignKey("UrbanHazardMap.Models.Category", "InstitutionId")
+                        .HasForeignKey("UrbanHazardMap.Data.Models.Category", "InstitutionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Institution");
                 });
 
-            modelBuilder.Entity("UrbanHazardMap.Models.VolunteerEvent", b =>
+            modelBuilder.Entity("UrbanHazardMap.Data.Models.VolunteerEvent", b =>
                 {
-                    b.HasOne("UrbanHazardMap.Models.IssueReport", "IssueReport")
+                    b.HasOne("UrbanHazardMap.Data.Models.IssueReport", "IssueReport")
                         .WithMany("VolunteerEvents")
                         .HasForeignKey("IssueReportId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -468,13 +465,13 @@ namespace UrbanHazardMap.Migrations
                     b.Navigation("IssueReport");
                 });
 
-            modelBuilder.Entity("UrbanHazardMap.Models.Institution", b =>
+            modelBuilder.Entity("UrbanHazardMap.Data.Models.Institution", b =>
                 {
                     b.Navigation("Category")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UrbanHazardMap.Models.IssueReport", b =>
+            modelBuilder.Entity("UrbanHazardMap.Data.Models.IssueReport", b =>
                 {
                     b.Navigation("VolunteerEvents");
                 });

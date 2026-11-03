@@ -14,7 +14,6 @@
 <div class="dashboard-container">
     <div class="row">
 
-        <!-- Sidebar -->
         <div class="col-md-3 col-lg-3 mb-3">
             <div class="filter-panel">
 
@@ -50,7 +49,6 @@
             </div>
         </div>
 
-        <!-- Map -->
         <div class="col-md-9 col-lg-9">
             <div class="map-panel">
                 <div id="map"></div>
@@ -62,10 +60,8 @@
 
 @section Scripts {
     <script>
-        // Initialize the map
         var map = L.map('map').setView([42.6977, 23.3219], 12);
 
-        // Add OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
