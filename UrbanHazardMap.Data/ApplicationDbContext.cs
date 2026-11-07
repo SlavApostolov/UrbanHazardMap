@@ -33,6 +33,10 @@ namespace UrbanHazardMap.Data
             modelBuilder.Entity<IssueReport>()
                 .HasMany(i => i.Categories)
                 .WithMany(c => c.IssueReports);
+
+            modelBuilder.Entity<IssueReport>()
+                .Property(r => r.Status)
+                .HasConversion<string>();
         }
     }
 }
