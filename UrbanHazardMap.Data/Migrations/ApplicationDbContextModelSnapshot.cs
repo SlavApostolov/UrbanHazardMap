@@ -34,7 +34,7 @@ namespace UrbanHazardMap.Data.Migrations
 
                     b.HasIndex("IssueReportsId");
 
-                    b.ToTable("CategoryIssueReport", (string)null);
+                    b.ToTable("CategoryIssueReport");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -267,7 +267,7 @@ namespace UrbanHazardMap.Data.Migrations
                     b.HasIndex("InstitutionId")
                         .IsUnique();
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("UrbanHazardMap.Data.Models.Institution", b =>
@@ -298,7 +298,7 @@ namespace UrbanHazardMap.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Institutions", (string)null);
+                    b.ToTable("Institutions");
                 });
 
             modelBuilder.Entity("UrbanHazardMap.Data.Models.IssueReport", b =>
@@ -323,7 +323,13 @@ namespace UrbanHazardMap.Data.Migrations
                     b.Property<double>("Longitude")
                         .HasColumnType("double precision");
 
-                    b.Property<string>("ReportedBy")
+                    b.Property<string>("PhotoPath")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReportedById")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReportedByUserId")
                         .HasColumnType("text");
 
                     b.Property<string>("Status")
@@ -337,7 +343,9 @@ namespace UrbanHazardMap.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IssueReports", (string)null);
+                    b.HasIndex("ReportedByUserId");
+
+                    b.ToTable("IssueReports");
                 });
 
             modelBuilder.Entity("UrbanHazardMap.Data.Models.VolunteerEvent", b =>
@@ -374,7 +382,7 @@ namespace UrbanHazardMap.Data.Migrations
 
                     b.HasIndex("IssueReportId");
 
-                    b.ToTable("VolunteerEvents", (string)null);
+                    b.ToTable("VolunteerEvents");
                 });
 
             modelBuilder.Entity("CategoryIssueReport", b =>
@@ -452,6 +460,15 @@ namespace UrbanHazardMap.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Institution");
+                });
+
+            modelBuilder.Entity("UrbanHazardMap.Data.Models.IssueReport", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "ReportedByUser")
+                        .WithMany()
+                        .HasForeignKey("ReportedByUserId");
+
+                    b.Navigation("ReportedByUser");
                 });
 
             modelBuilder.Entity("UrbanHazardMap.Data.Models.VolunteerEvent", b =>
