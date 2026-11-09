@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UrbanHazardMap.Services;
 using UrbanHazardMap.ViewModels;
 
@@ -14,6 +16,7 @@ namespace UrbanHazardMap.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Create()
         {
             var model = new CreateIssueReportViewModel
@@ -25,6 +28,7 @@ namespace UrbanHazardMap.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateIssueReportViewModel model)
         {
@@ -34,7 +38,8 @@ namespace UrbanHazardMap.Controllers
                 return View(model);
             }
 
-            await _issueReportService.CreateAsync(model, null);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _issueReportService.CreateAsync(model, userId);
             return RedirectToAction(nameof(Success));
         }
 
