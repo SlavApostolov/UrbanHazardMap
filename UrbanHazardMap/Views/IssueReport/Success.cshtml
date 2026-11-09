@@ -1,0 +1,15 @@
+@{
+    ViewData["Title"] = "Report submitted";
+}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4 text-center">
+                <h2 class="mb-3">Thank you</h2>
+                <p class="mb-4">Your report has been submitted and is waiting for approval.</p>
+                <a class="btn btn-outline-secondary me-2" asp-controller="Home" asp-action="Index">Back to the map</a>
+                <a class="btn btn-success" asp-controller="IssueReport" asp-action="Create">Submit another report</a>
+            </div>
+        </div>
+    </div>
+</div>

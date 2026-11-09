@@ -1,4 +1,6 @@
-﻿@{
+﻿@using UrbanHazardMap.ViewModels
+@model CreateIssueReportViewModel
+@{
     ViewData["Title"] = "Report a Hazard";
 }
 <div class="row justify-content-center">
@@ -12,46 +14,38 @@
                 <form method="post">
                     <div class="mb-3">
                         <label for="Title" class="form-label">Title</label>
-                        <input type="text" class="form-control" id="Title" name="Title" placeholder="e.g. Large pothole on the main road" />
+                        <input type="text" class="form-control" id="Title" asp-for="Title" placeholder="e.g. Large pothole on the main road" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
                         <label for="Description" class="form-label">Description</label>
-                        <textarea class="form-control" id="Description" name="Description" rows="4"></textarea>
+                        <textarea class="form-control" id="Description" asp-for="Description" rows="4"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
                     <div class="row">
                         <div class="col-6 mb-3">
                             <label for="Latitude" class="form-label">Latitude</label>
-                            <input type="number" step="any" class="form-control" id="Latitude" name="Latitude" readonly placeholder="Select on the map" />
+                            <input type="number" step="any" class="form-control" id="Latitude" asp-for="Latitude" readonly placeholder="Select on the map" />
+                            <span asp-validation-for="Latitude" class="text-danger"></span>
                         </div>
                         <div class="col-6 mb-3">
                             <label for="Longitude" class="form-label">Longitude</label>
-                            <input type="number" step="any" class="form-control" id="Longitude" name="Longitude" readonly placeholder="Select on the map" />
+                            <input type="number" step="any" class="form-control" id="Longitude" asp-for="Longitude" readonly placeholder="Select on the map" />
+                            <span asp-validation-for="Longitude" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-text mb-3">Coordinates are filled in automatically when you pick a spot on the map.</div>
                     <div class="mb-3">
                         <label class="form-label d-block">Categories</label>
 
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="cat1" name="CategoryIds" value="1" />
-                            <label class="form-check-label" for="cat1">Road Infrastructure</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="cat2" name="CategoryIds" value="2" />
-                            <label class="form-check-label" for="cat2">Buildings and Structures</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="cat3" name="CategoryIds" value="3" />
-                            <label class="form-check-label" for="cat3">Public Utilities</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="cat4" name="CategoryIds" value="4" />
-                            <label class="form-check-label" for="cat4">Environmental Hazards</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="cat5" name="CategoryIds" value="5" />
-                            <label class="form-check-label" for="cat5">Accessibility and Public Safety</label>
-                        </div>
+                        @foreach (var category in Model.AvailableCategories)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat-@category.Id" name="CategoryIds" value="@category.Id" @(Model.CategoryIds.Contains(category.Id) ? "checked" : null) />
+                                <label class="form-check-label" for="cat-@category.Id">@category.Title</label>
+                            </div>
+                        }
+                        <span asp-validation-for="CategoryIds" class="text-danger"></span>
                     </div>
                     <button type="submit" class="btn btn-success w-100">Submit Report</button>
                 </form>
@@ -60,3 +54,7 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
