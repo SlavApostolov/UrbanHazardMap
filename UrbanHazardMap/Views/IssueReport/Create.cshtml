@@ -1,5 +1,14 @@
 ﻿@using UrbanHazardMap.ViewModels
 @model UrbanHazardMap.ViewModels.CreateIssueReportViewModel
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/report-form.css" />
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="" />
+}
+
 @{
     ViewData["Title"] = "Report a Hazard";
 }
@@ -21,6 +30,7 @@
                         <label for="Description" class="form-label">Description</label>
                         <textarea class="form-control" asp-for = "Description" rows="4"></textarea>
                     </div>
+                    <div id="reportMap"></div>
                     <div class="row">
                         <div class="col-6 mb-3">
                             <label for="Latitude" class="form-label">Latitude</label>
@@ -28,7 +38,7 @@
                         </div>
                         <div class="col-6 mb-3">
                             <label for="Longitude" class="form-label">Longitude</label>
-                            <input type="number" step="any" class="form-control" asp-for= "Longitude" readonly placeholder="Select on the map" />
+                            <input type="number" step="any" class="form-control" asp-for="Longitude" readonly placeholder="Select on the map" />
                         </div>
                     </div>
                     <div class="form-text mb-3">Coordinates are filled in automatically when you pick a spot on the map.</div>
@@ -45,8 +55,44 @@
                     </div>
                     <button type="submit" class="btn btn-success w-100">Submit Report</button>
                 </form>
-
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+         console.log(sessionStorage.getItem("Lat"));
+        var map = L.map('reportMap').setView([42.6977, 23.3219], 12);
+        if(!sessionStorage.getItem("Lat"))
+        var marker;
+        else
+        {
+        var Lat = sessionStorage.getItem("Lat");
+        var Lng = sessionStorage.getItem("Lng");
+        var marker =  L.marker([Lat,Lng]).addTo(map);
+        document.getElementById("Latitude").value = Number(Lat).toFixed(6);
+        document.getElementById("Longitude").value = Number(Lng).toFixed(6);
+        }
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        map.on('click',function(e){
+            if(marker == undefined)
+            {
+                marker = L.marker(e.latlng).addTo(map);
+            }
+            else{
+                      marker.setLatLng(e.latlng);
+            }
+          document.getElementById("Latitude").value = e.latlng.lat.toFixed(6);
+          document.getElementById("Longitude").value = e.latlng.lng.toFixed(6);
+          sessionStorage.setItem("Lat",e.latlng.lat);
+          sessionStorage.setItem("Lng",e.latlng.lng);
+        });
+        
+
+    </script>
+}
