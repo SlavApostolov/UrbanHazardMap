@@ -27,6 +27,14 @@ namespace UrbanHazardMap.Services
                 .ToListAsync();
         }
 
+        public async Task<List<IssueReport>> GetApprovedAsync()
+        {
+            return await _context.IssueReports
+                .Include(report => report.Categories)
+                .Where(report => report.Status == "Approved")
+                .ToListAsync();
+        }
+
         public async Task CreateAsync(CreateIssueReportViewModel model, string? userId)
         {
             var categories = await _context.Categories

@@ -35,6 +35,87 @@ public static async Task SeedDatabase(ApplicationDbContext context)
 
         await context.SaveChangesAsync();
     }
+
+    await SeedDemoReports(context);
+}
+
+public static async Task SeedDemoReports(ApplicationDbContext context)
+{
+    if (await context.IssueReports.AnyAsync())
+    {
+        return;
+    }
+
+    var categories = await context.Categories.ToListAsync();
+    if (categories.Count == 0)
+    {
+        return;
+    }
+
+    Category Find(string title) => categories.First(category => category.Title == title);
+
+    var road = Find("Road Infrastructure");
+    var buildings = Find("Buildings and Structures");
+    var utilities = Find("Public Utilities");
+    var environment = Find("Environmental Hazards");
+    var access = Find("Accessibility and Public Safety");
+
+    var reports = new List<IssueReport>
+    {
+        new IssueReport
+        {
+            Title = "Pothole in front of NDK",
+            Description = "A deep pothole in the bus lane in front of the National Palace of Culture.",
+            Latitude = 42.6868,
+            Longitude = 23.3187,
+            Status = "Approved",
+            CreatedAt = DateTime.UtcNow.AddDays(-6),
+            Categories = new List<Category> { road }
+        },
+        new IssueReport
+        {
+            Title = "Cracked facade near Sofia University",
+            Description = "Loose plaster on a building facade above the sidewalk by Sofia University.",
+            Latitude = 42.6934,
+            Longitude = 23.3348,
+            Status = "Approved",
+            CreatedAt = DateTime.UtcNow.AddDays(-4),
+            Categories = new List<Category> { buildings, access }
+        },
+        new IssueReport
+        {
+            Title = "Dark street light at Lion's Bridge",
+            Description = "The street light at Lion's Bridge has been out for several nights.",
+            Latitude = 42.7046,
+            Longitude = 23.3236,
+            Status = "Approved",
+            CreatedAt = DateTime.UtcNow.AddDays(-3),
+            Categories = new List<Category> { utilities }
+        },
+        new IssueReport
+        {
+            Title = "Fallen tree in Borisova Gradina",
+            Description = "A fallen tree is blocking a footpath in Borisova Gradina.",
+            Latitude = 42.6808,
+            Longitude = 23.3382,
+            Status = "Approved",
+            CreatedAt = DateTime.UtcNow.AddDays(-2),
+            Categories = new List<Category> { environment, road }
+        },
+        new IssueReport
+        {
+            Title = "Blocked ramp at Serdika",
+            Description = "The wheelchair ramp by Serdika metro station is blocked by construction barriers.",
+            Latitude = 42.6978,
+            Longitude = 23.3212,
+            Status = "Approved",
+            CreatedAt = DateTime.UtcNow.AddDays(-1),
+            Categories = new List<Category> { access }
+        }
+    };
+
+    context.IssueReports.AddRange(reports);
+    await context.SaveChangesAsync();
 }
 
 public static List<Category> SeedCategories(
