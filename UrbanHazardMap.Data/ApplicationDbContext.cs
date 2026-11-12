@@ -7,6 +7,7 @@ namespace UrbanHazardMap.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
+
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -33,6 +34,10 @@ namespace UrbanHazardMap.Data
             modelBuilder.Entity<IssueReport>()
                 .HasMany(i => i.Categories)
                 .WithMany(c => c.IssueReports);
+
+            modelBuilder.Entity<IssueReport>()
+                .Property(r => r.Status)
+                .HasConversion<string>();
         }
     }
 }

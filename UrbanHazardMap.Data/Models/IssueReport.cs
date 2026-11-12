@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace UrbanHazardMap.Data.Models
 {
@@ -15,8 +16,10 @@ namespace UrbanHazardMap.Data.Models
         public string Description { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public string? ReportedBy { get; set; }
-        public string Status { get; set; } = "Pending";
+        public string? ReportedById { get; set; }
+        public IdentityUser? ReportedByUser { get; set; }
+        public string? PhotoPath { get; set; }
+        public ReportStatus Status { get; set; } = ReportStatus.Pending;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<Category> Categories { get; set; } = new List<Category>();

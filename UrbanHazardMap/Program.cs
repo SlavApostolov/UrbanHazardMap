@@ -29,7 +29,7 @@ namespace UrbanHazardMap
             {
                 var context = scope.ServiceProvider
                     .GetRequiredService<ApplicationDbContext>();
-
+               
                 await context.Database.MigrateAsync();
 
                 Console.WriteLine("Starting database seeding...");

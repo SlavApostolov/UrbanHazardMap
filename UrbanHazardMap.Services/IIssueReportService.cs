@@ -1,11 +1,11 @@
-using UrbanHazardMap.ViewModels;
+using UrbanHazardMap.Data.Models;
 
 namespace UrbanHazardMap.Services
 {
     public interface IIssueReportService
     {
-        Task<List<CategoryOptionViewModel>> GetAvailableCategoriesAsync();
+        Task<List<Category>> GetAllCategoriesAsync();
 
-        Task CreateAsync(CreateIssueReportViewModel model, string? userId);
+        Task<int> CreateAsync(string title, string description, double latitude, double longitude, IEnumerable<int> categoryIds, string? userId);
     }
 }
