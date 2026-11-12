@@ -16,11 +16,8 @@ namespace UrbanHazardMap.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var model = new CreateIssueReportViewModel
-            {
-                AvailableCategories = await _issueReportService.GetAvailableCategoriesAsync()
-            };
-
+            var model = new CreateIssueReportViewModel();
+            await LoadCategoriesAsync(model);
             return View(model);
         }
 
@@ -30,17 +27,37 @@ namespace UrbanHazardMap.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.AvailableCategories = await _issueReportService.GetAvailableCategoriesAsync();
+                await LoadCategoriesAsync(model);
                 return View(model);
             }
 
-            await _issueReportService.CreateAsync(model, null);
+            await _issueReportService.CreateAsync(
+                model.Title,
+                model.Description,
+                model.Latitude!.Value,
+                model.Longitude!.Value,
+                model.CategoryIds,
+                null);
+
             return RedirectToAction(nameof(Success));
         }
 
         public IActionResult Success()
         {
             return View();
+        }
+
+        private async Task LoadCategoriesAsync(CreateIssueReportViewModel model)
+        {
+            var categories = await _issueReportService.GetAllCategoriesAsync();
+            model.AvailableCategories = categories
+                .Select(category => new CategoryOptionViewModel
+                {
+                    Id = category.Id,
+                    Title = category.Title,
+                    MarkedHexColor = category.MarkedHexColor
+                })
+                .ToList();
         }
     }
 }
