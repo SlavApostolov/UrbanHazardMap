@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UrbanHazardMap.Services;
@@ -19,11 +19,8 @@ namespace UrbanHazardMap.Controllers
         [Authorize]
         public async Task<IActionResult> Create()
         {
-            var model = new CreateIssueReportViewModel
-            {
-                AvailableCategories = await _issueReportService.GetAvailableCategoriesAsync()
-            };
-
+            var model = new CreateIssueReportViewModel();
+            await LoadCategoriesAsync(model);
             return View(model);
         }
 
@@ -34,18 +31,38 @@ namespace UrbanHazardMap.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.AvailableCategories = await _issueReportService.GetAvailableCategoriesAsync();
+                await LoadCategoriesAsync(model);
                 return View(model);
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _issueReportService.CreateAsync(model, userId);
+            await _issueReportService.CreateAsync(
+                model.Title,
+                model.Description,
+                model.Latitude!.Value,
+                model.Longitude!.Value,
+                model.CategoryIds,
+                userId);
+
             return RedirectToAction(nameof(Success));
         }
 
         public IActionResult Success()
         {
             return View();
+        }
+
+        private async Task LoadCategoriesAsync(CreateIssueReportViewModel model)
+        {
+            var categories = await _issueReportService.GetAllCategoriesAsync();
+            model.AvailableCategories = categories
+                .Select(category => new CategoryOptionViewModel
+                {
+                    Id = category.Id,
+                    Title = category.Title,
+                    MarkedHexColor = category.MarkedHexColor
+                })
+                .ToList();
         }
     }
 }

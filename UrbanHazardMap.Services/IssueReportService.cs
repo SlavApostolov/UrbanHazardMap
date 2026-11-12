@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UrbanHazardMap.Data;
 using UrbanHazardMap.Data.Models;
-using UrbanHazardMap.ViewModels;
 
 namespace UrbanHazardMap.Services
 {
@@ -9,21 +8,15 @@ namespace UrbanHazardMap.Services
     {
         private readonly ApplicationDbContext _context;
 
-        public IssueReportService(ApplicationDbContext context)
+        public IssueReportService(ApplicationDbContext applicationDbContext)
         {
-            _context = context;
+            _context = applicationDbContext;
         }
 
-        public async Task<List<CategoryOptionViewModel>> GetAvailableCategoriesAsync()
+        public async Task<List<Category>> GetAllCategoriesAsync()
         {
             return await _context.Categories
-                .OrderBy(category => category.Id)
-                .Select(category => new CategoryOptionViewModel
-                {
-                    Id = category.Id,
-                    Title = category.Title,
-                    MarkedHexColor = category.MarkedHexColor
-                })
+                .OrderBy(category => category.Title)
                 .ToListAsync();
         }
 
@@ -31,30 +24,36 @@ namespace UrbanHazardMap.Services
         {
             return await _context.IssueReports
                 .Include(report => report.Categories)
-                .Where(report => report.Status == "Approved")
+                .Where(report => report.Status == ReportStatus.Approved)
                 .ToListAsync();
         }
 
-        public async Task CreateAsync(CreateIssueReportViewModel model, string? userId)
+        public async Task<int> CreateAsync(string title, string description, double latitude, double longitude, IEnumerable<int> categoryIds, string? userId)
         {
             var categories = await _context.Categories
-                .Where(category => model.CategoryIds.Contains(category.Id))
+                .Where(category => categoryIds.Contains(category.Id))
                 .ToListAsync();
 
-            var report = new IssueReport
+            if (categories.Count == 0)
             {
-                Title = model.Title,
-                Description = model.Description,
-                Latitude = model.Latitude!.Value,
-                Longitude = model.Longitude!.Value,
-                ReportedBy = userId,
-                Status = "Pending",
-                CreatedAt = DateTime.UtcNow,
-                Categories = categories
+                throw new ArgumentException("There are no Ids coresponding to the given categoryIds");
+            }
+
+            var issueReport = new IssueReport
+            {
+                Title = title,
+                Description = description,
+                Latitude = latitude,
+                Longitude = longitude,
+                Categories = categories,
+                ReportedById = userId,
+                Status = ReportStatus.Pending,
+                CreatedAt = DateTime.UtcNow
             };
 
-            _context.IssueReports.Add(report);
+            _context.IssueReports.Add(issueReport);
             await _context.SaveChangesAsync();
+            return issueReport.Id;
         }
     }
 }
