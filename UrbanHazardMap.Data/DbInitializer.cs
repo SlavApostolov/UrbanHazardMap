@@ -68,7 +68,7 @@ public static async Task SeedDemoReports(ApplicationDbContext context)
             Description = "A deep pothole in the bus lane in front of the National Palace of Culture.",
             Latitude = 42.6868,
             Longitude = 23.3187,
-            Status = "Approved",
+            Status = ReportStatus.Approved,
             CreatedAt = DateTime.UtcNow.AddDays(-6),
             Categories = new List<Category> { road }
         },
@@ -78,7 +78,7 @@ public static async Task SeedDemoReports(ApplicationDbContext context)
             Description = "Loose plaster on a building facade above the sidewalk by Sofia University.",
             Latitude = 42.6934,
             Longitude = 23.3348,
-            Status = "Approved",
+            Status = ReportStatus.Approved,
             CreatedAt = DateTime.UtcNow.AddDays(-4),
             Categories = new List<Category> { buildings, access }
         },
@@ -88,7 +88,7 @@ public static async Task SeedDemoReports(ApplicationDbContext context)
             Description = "The street light at Lion's Bridge has been out for several nights.",
             Latitude = 42.7046,
             Longitude = 23.3236,
-            Status = "Approved",
+            Status = ReportStatus.Approved,
             CreatedAt = DateTime.UtcNow.AddDays(-3),
             Categories = new List<Category> { utilities }
         },
@@ -98,7 +98,7 @@ public static async Task SeedDemoReports(ApplicationDbContext context)
             Description = "A fallen tree is blocking a footpath in Borisova Gradina.",
             Latitude = 42.6808,
             Longitude = 23.3382,
-            Status = "Approved",
+            Status = ReportStatus.Approved,
             CreatedAt = DateTime.UtcNow.AddDays(-2),
             Categories = new List<Category> { environment, road }
         },
@@ -108,7 +108,7 @@ public static async Task SeedDemoReports(ApplicationDbContext context)
             Description = "The wheelchair ramp by Serdika metro station is blocked by construction barriers.",
             Latitude = 42.6978,
             Longitude = 23.3212,
-            Status = "Approved",
+            Status = ReportStatus.Approved,
             CreatedAt = DateTime.UtcNow.AddDays(-1),
             Categories = new List<Category> { access }
         }
