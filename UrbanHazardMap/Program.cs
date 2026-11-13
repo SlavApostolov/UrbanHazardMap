@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using UrbanHazardMap.Data;
-using Microsoft.EntityFrameworkCore;
 using UrbanHazardMap.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace UrbanHazardMap
 {
@@ -18,10 +18,9 @@ namespace UrbanHazardMap
                 options.UseNpgsql(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
-
             builder.Services.AddScoped<IIssueReportService, IssueReportService>();
 
             var app = builder.Build();
@@ -61,6 +60,7 @@ namespace UrbanHazardMap
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
