@@ -21,6 +21,7 @@ namespace UrbanHazardMap
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IIssueReportService, IssueReportService>();
@@ -44,6 +45,22 @@ namespace UrbanHazardMap
                 Console.WriteLine($"Institutions: {institutionCount}");
                 Console.WriteLine($"Categories: {categoryCount}");
                 Console.WriteLine("Database seeding completed!");
+            }
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                var adminEmail = builder.Configuration["Admin:Email"];
+                var adminPassword = builder.Configuration["Admin:Password"];
+                if (string.IsNullOrEmpty(adminEmail) || string.IsNullOrEmpty(adminPassword))
+                {
+                    Console.WriteLine("Admin user email or password is not configured.");
+                }
+                else
+                {
+                    await IdentitySeeder.SeedRolesAsync(roleManager, userManager, adminEmail, adminPassword);
+                }
             }
 
             if (app.Environment.IsDevelopment())
