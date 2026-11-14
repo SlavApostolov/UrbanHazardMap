@@ -36,13 +36,22 @@ namespace UrbanHazardMap.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _issueReportService.CreateAsync(
-                model.Title,
-                model.Description,
-                model.Latitude!.Value,
-                model.Longitude!.Value,
-                model.CategoryIds,
-                userId);
+            try
+            {
+                await _issueReportService.CreateAsync(
+                    model.Title,
+                    model.Description,
+                    model.Latitude!.Value,
+                    model.Longitude!.Value,
+                    model.CategoryIds,
+                    userId);
+            }
+            catch (ArgumentException)
+            {
+                ModelState.AddModelError(nameof(model.CategoryIds), "One or more selected categories are invalid.");
+                await LoadCategoriesAsync(model);
+                return View(model);
+            }
 
             return RedirectToAction(nameof(Success));
         }

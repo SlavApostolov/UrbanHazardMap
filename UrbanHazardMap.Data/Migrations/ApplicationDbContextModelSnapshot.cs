@@ -329,9 +329,6 @@ namespace UrbanHazardMap.Data.Migrations
                     b.Property<string>("ReportedById")
                         .HasColumnType("text");
 
-                    b.Property<string>("ReportedByUserId")
-                        .HasColumnType("text");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");
@@ -343,7 +340,7 @@ namespace UrbanHazardMap.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ReportedByUserId");
+                    b.HasIndex("ReportedById");
 
                     b.ToTable("IssueReports");
                 });
@@ -466,7 +463,8 @@ namespace UrbanHazardMap.Data.Migrations
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "ReportedByUser")
                         .WithMany()
-                        .HasForeignKey("ReportedByUserId");
+                        .HasForeignKey("ReportedById")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("ReportedByUser");
                 });

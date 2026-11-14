@@ -38,6 +38,12 @@ namespace UrbanHazardMap.Data
             modelBuilder.Entity<IssueReport>()
                 .Property(r => r.Status)
                 .HasConversion<string>();
+
+            modelBuilder.Entity<IssueReport>()
+                .HasOne(i => i.ReportedByUser)
+                .WithMany()
+                .HasForeignKey(i => i.ReportedById)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

@@ -2,11 +2,7 @@
 @model CreateIssueReportViewModel
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/report-form.css" />
-    <link rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossorigin="" />
+    <link rel="stylesheet" href="~/css/report-form.css" asp-append-version="true" />
 }
 
 @{
@@ -68,37 +64,31 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-         console.log(sessionStorage.getItem("Lat"));
-        var map = L.map('reportMap').setView([42.6977, 23.3219], 12);
-        if(!sessionStorage.getItem("Lat"))
-        var marker;
-        else
-        {
-        var Lat = sessionStorage.getItem("Lat");
-        var Lng = sessionStorage.getItem("Lng");
-        var marker =  L.marker([Lat,Lng]).addTo(map);
-        document.getElementById("Latitude").value = Number(Lat).toFixed(6);
-        document.getElementById("Longitude").value = Number(Lng).toFixed(6);
-        }
+        const latitudeInput = document.getElementById('Latitude');
+        const longitudeInput = document.getElementById('Longitude');
+        let marker = null;
+
+        const map = L.map('reportMap').setView([42.6977, 23.3219], 12);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        map.on('click',function(e){
-            if(marker == undefined)
-            {
-                marker = L.marker(e.latlng).addTo(map);
-            }
-            else{
-                      marker.setLatLng(e.latlng);
-            }
-          document.getElementById("Latitude").value = e.latlng.lat.toFixed(6);
-          document.getElementById("Longitude").value = e.latlng.lng.toFixed(6);
-          sessionStorage.setItem("Lat",e.latlng.lat);
-          sessionStorage.setItem("Lng",e.latlng.lng);
-        });
-        
+        if (latitudeInput.value !== '' && longitudeInput.value !== '') {
+            const position = [parseFloat(latitudeInput.value), parseFloat(longitudeInput.value)];
+            marker = L.marker(position).addTo(map);
+            map.setView(position, 15);
+        }
 
+        map.on('click', function (e) {
+            if (!marker) {
+                marker = L.marker(e.latlng).addTo(map);
+            } else {
+                marker.setLatLng(e.latlng);
+            }
+
+            latitudeInput.value = e.latlng.lat.toFixed(6);
+            longitudeInput.value = e.latlng.lng.toFixed(6);
+        });
     </script>
 }

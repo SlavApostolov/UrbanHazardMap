@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using UrbanHazardMap.Data;
 using UrbanHazardMap.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace UrbanHazardMap
 {
@@ -34,7 +36,7 @@ namespace UrbanHazardMap
 
                 Console.WriteLine("Starting database seeding...");
 
-                await DbInitializer.SeedDatabase(context);
+                await DbInitializer.SeedDatabase(context, seedDemoData: app.Environment.IsDevelopment());
 
                 var institutionCount = await context.Institutions.CountAsync();
                 var categoryCount = await context.Categories.CountAsync();
@@ -57,6 +59,13 @@ namespace UrbanHazardMap
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("en-US"),
+                SupportedCultures = new List<CultureInfo> { new CultureInfo("en-US") },
+                SupportedUICultures = new List<CultureInfo> { new CultureInfo("en-US") }
+            });
 
             app.UseRouting();
 

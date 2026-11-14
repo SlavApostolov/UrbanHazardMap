@@ -13,7 +13,7 @@ namespace UrbanHazardMap.Data
        }
 
        
-public static async Task SeedDatabase(ApplicationDbContext context)
+public static async Task SeedDatabase(ApplicationDbContext context, bool seedDemoData = false)
 {
 
     if (!await context.Institutions.AnyAsync())
@@ -36,7 +36,10 @@ public static async Task SeedDatabase(ApplicationDbContext context)
         await context.SaveChangesAsync();
     }
 
-    await SeedDemoReports(context);
+    if (seedDemoData)
+    {
+        await SeedDemoReports(context);
+    }
 }
 
 public static async Task SeedDemoReports(ApplicationDbContext context)

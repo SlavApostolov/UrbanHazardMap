@@ -25,6 +25,8 @@ namespace UrbanHazardMap.Services
             return await _context.IssueReports
                 .Include(report => report.Categories)
                 .Where(report => report.Status == ReportStatus.Approved)
+                .OrderByDescending(report => report.CreatedAt)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
