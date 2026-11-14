@@ -6,6 +6,8 @@ namespace UrbanHazardMap.Services
     {
         Task<List<Category>> GetAllCategoriesAsync();
 
+        Task<List<IssueReport>> GetApprovedAsync();
+
         Task<int> CreateAsync(string title, string description, double latitude, double longitude, IEnumerable<int> categoryIds, string? userId);
     }
 }
