@@ -52,6 +52,7 @@
         <div class="col-md-9 col-lg-9">
             <div class="map-panel">
                 <div id="map"></div>
+                <div id="reportsError" class="text-danger small mt-2 px-2" hidden></div>
             </div>
         </div>
 
@@ -68,6 +69,10 @@
 
         fetch('/api/reports')
             .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('Request failed with status ' + response.status);
+                }
+
                 return response.json();
             })
             .then(function (reports) {
@@ -85,6 +90,12 @@
                         .addTo(map)
                         .bindPopup(buildReportPopup(report));
                 });
+            })
+            .catch(function (error) {
+                console.error('Could not load reports:', error);
+                var message = document.getElementById('reportsError');
+                message.textContent = 'Could not load reports. Please try again later.';
+                message.hidden = false;
             });
 
         function buildReportPopup(report) {
