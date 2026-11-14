@@ -41,10 +41,10 @@
 
                 <hr />
 
-                <button class="report-button">
+                <a class="report-button" asp-controller="IssueReport" asp-action="Create">
                     <i class="bi bi-plus-circle me-2"></i>
                     Report Issue
-                </button>
+                </a>
 
             </div>
         </div>
@@ -65,5 +65,65 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+
+        fetch('/api/reports')
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (reports) {
+                reports.forEach(function (report) {
+                    var color = report.categories && report.categories.length > 0
+                        ? report.categories[0].color
+                        : '#3388ff';
+
+                    L.circleMarker([report.latitude, report.longitude], {
+                        radius: 9,
+                        color: color,
+                        fillColor: color,
+                        fillOpacity: 0.8
+                    })
+                        .addTo(map)
+                        .bindPopup(buildReportPopup(report));
+                });
+            });
+
+        function buildReportPopup(report) {
+            var popup = document.createElement('div');
+
+            var title = document.createElement('strong');
+            title.textContent = report.title;
+            popup.appendChild(title);
+
+            var description = document.createElement('p');
+            description.textContent = report.description;
+            description.style.margin = '6px 0';
+            popup.appendChild(description);
+
+            var created = document.createElement('p');
+            created.textContent = new Date(report.createdAt).toLocaleDateString();
+            created.style.margin = '0 0 6px';
+            popup.appendChild(created);
+
+            (report.categories || []).forEach(function (category) {
+                var row = document.createElement('div');
+
+                var dot = document.createElement('span');
+                dot.style.display = 'inline-block';
+                dot.style.width = '10px';
+                dot.style.height = '10px';
+                dot.style.marginRight = '6px';
+                dot.style.borderRadius = '50%';
+                dot.style.backgroundColor = category.color;
+
+                var name = document.createElement('span');
+                name.textContent = category.title;
+
+                row.appendChild(dot);
+                row.appendChild(name);
+                popup.appendChild(row);
+            });
+
+            return popup;
+        }
     </script>
 }
