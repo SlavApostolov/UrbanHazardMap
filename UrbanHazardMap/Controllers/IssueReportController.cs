@@ -46,7 +46,7 @@ namespace UrbanHazardMap.Controllers
                     model.CategoryIds,
                     userId);
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
                 ModelState.AddModelError(nameof(model.CategoryIds), "One or more selected categories are invalid.");
                 await LoadCategoriesAsync(model);
