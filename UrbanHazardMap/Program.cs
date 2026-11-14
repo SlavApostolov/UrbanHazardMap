@@ -34,7 +34,7 @@ namespace UrbanHazardMap
 
                 Console.WriteLine("Starting database seeding...");
 
-                await DbInitializer.SeedDatabase(context);
+                await DbInitializer.SeedDatabase(context, seedDemoData: app.Environment.IsDevelopment());
 
                 var institutionCount = await context.Institutions.CountAsync();
                 var categoryCount = await context.Categories.CountAsync();
