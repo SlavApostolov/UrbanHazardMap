@@ -1,36 +1,68 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using UrbanHazardMap.Data;
-using UrbanHazardMap.Data.Models;
-using UrbanHazardMap.ViewModels;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UrbanHazardMap.Services;
-using static System.Formats.Asn1.AsnWriter;
-using AspNetCoreGeneratedDocument;
-
+using UrbanHazardMap.ViewModels;
 
 namespace UrbanHazardMap.Controllers
 {
     public class IssueReportController : Controller
-
     {
-        private IIssueReportService _issueReportService;
-        public IssueReportController(IIssueReportService issueReportService) 
+        private readonly IIssueReportService _issueReportService;
+
+        public IssueReportController(IIssueReportService issueReportService)
         {
             _issueReportService = issueReportService;
         }
+
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Create()
         {
-            List<Category> categories =  await _issueReportService.GetAllCategoriesAsync();
-            CreateIssueReportViewModel viewModel = new();
-            foreach (var category in categories)
+            var model = new CreateIssueReportViewModel();
+            await LoadCategoriesAsync(model);
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateIssueReportViewModel model)
+        {
+            if (!ModelState.IsValid)
             {
-                CategoryOptionViewModel temp = new CategoryOptionViewModel();
-                temp.Id = category.Id;
-                temp.Title = category.Title;
-                temp.MarkedHexColor = category.MarkedHexColor;
-                viewModel.AvailableCategories.Add(temp);
+                await LoadCategoriesAsync(model);
+                return View(model);
             }
-            return View(viewModel);
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _issueReportService.CreateAsync(
+                model.Title,
+                model.Description,
+                model.Latitude!.Value,
+                model.Longitude!.Value,
+                model.CategoryIds,
+                userId);
+
+            return RedirectToAction(nameof(Success));
+        }
+
+        public IActionResult Success()
+        {
+            return View();
+        }
+
+        private async Task LoadCategoriesAsync(CreateIssueReportViewModel model)
+        {
+            var categories = await _issueReportService.GetAllCategoriesAsync();
+            model.AvailableCategories = categories
+                .Select(category => new CategoryOptionViewModel
+                {
+                    Id = category.Id,
+                    Title = category.Title,
+                    MarkedHexColor = category.MarkedHexColor
+                })
+                .ToList();
         }
     }
 }

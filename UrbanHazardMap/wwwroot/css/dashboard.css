@@ -47,6 +47,9 @@
 }
 
 .report-button {
+    display: block;
+    text-align: center;
+    text-decoration: none;
     width: 100%;
     background: #168b75;
     color: white;

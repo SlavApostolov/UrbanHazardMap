@@ -1,5 +1,5 @@
 ﻿@using UrbanHazardMap.ViewModels
-@model UrbanHazardMap.ViewModels.CreateIssueReportViewModel
+@model CreateIssueReportViewModel
 
 @section Styles {
     <link rel="stylesheet" href="~/css/report-form.css" />
@@ -24,21 +24,25 @@
                 <form method="post">
                     <div class="mb-3">
                         <label for="Title" class="form-label">Title</label>
-                        <input type="text" class="form-control" asp-for = "Title" placeholder="e.g. Large pothole on the main road" />
+                        <input type="text" class="form-control" asp-for="Title" placeholder="e.g. Large pothole on the main road" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
                         <label for="Description" class="form-label">Description</label>
-                        <textarea class="form-control" asp-for = "Description" rows="4"></textarea>
+                        <textarea class="form-control" asp-for="Description" rows="4"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
                     <div id="reportMap"></div>
                     <div class="row">
                         <div class="col-6 mb-3">
                             <label for="Latitude" class="form-label">Latitude</label>
                             <input type="number" step="any" class="form-control" asp-for="Latitude" readonly placeholder="Select on the map" />
+                            <span asp-validation-for="Latitude" class="text-danger"></span>
                         </div>
                         <div class="col-6 mb-3">
                             <label for="Longitude" class="form-label">Longitude</label>
                             <input type="number" step="any" class="form-control" asp-for="Longitude" readonly placeholder="Select on the map" />
+                            <span asp-validation-for="Longitude" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-text mb-3">Coordinates are filled in automatically when you pick a spot on the map.</div>
@@ -48,10 +52,11 @@
                         @foreach (CategoryOptionViewModel category in Model.AvailableCategories)
                         {
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="@category.Id" name="CategoryIds" value="@category.Id" />
-                                <label class="form-check-label" for="@category.Id">@category.Title</label>
+                                <input class="form-check-input" type="checkbox" id="cat-@category.Id" name="CategoryIds" value="@category.Id" @(Model.CategoryIds.Contains(category.Id) ? "checked" : null) />
+                                <label class="form-check-label" for="cat-@category.Id">@category.Title</label>
                             </div>
                         }
+                        <span asp-validation-for="CategoryIds" class="text-danger"></span>
                     </div>
                     <button type="submit" class="btn btn-success w-100">Submit Report</button>
                 </form>
@@ -61,6 +66,7 @@
 </div>
 
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
     <script>
          console.log(sessionStorage.getItem("Lat"));
         var map = L.map('reportMap').setView([42.6977, 23.3219], 12);
