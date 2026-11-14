@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.33" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\UrbanHazardMap.Data\UrbanHazardMap.Data.csproj" />
   </ItemGroup>
 

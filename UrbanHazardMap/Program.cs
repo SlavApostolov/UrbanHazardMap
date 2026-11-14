@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using UrbanHazardMap.Data;
-using Microsoft.EntityFrameworkCore;
 using UrbanHazardMap.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace UrbanHazardMap
 {
@@ -21,7 +21,6 @@ namespace UrbanHazardMap
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
-
             builder.Services.AddScoped<IIssueReportService, IssueReportService>();
 
             var app = builder.Build();
