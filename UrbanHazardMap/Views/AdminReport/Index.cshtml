@@ -1,0 +1,55 @@
+@using UrbanHazardMap.ViewModels
+@model IEnumerable<AdminReportListItemViewModel>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+}
+
+@{
+    ViewData["Title"] = "Pending Reports";
+}
+
+<h2 class="mb-1">Pending Reports</h2>
+<p class="text-muted mb-4">Reports waiting for a moderator's decision.</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">There are no pending reports.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Categories</th>
+                    <th>Reporter</th>
+                    <th>Created (UTC)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var report in Model)
+                {
+                    <tr>
+                        <td>@report.Title</td>
+                        <td>
+                            @foreach (var category in report.Categories)
+                            {
+                                <div>
+                                    <span class="category-dot" style="background-color: @category.Color"></span>@category.Title
+                                </div>
+                            }
+                        </td>
+                        <td>@(string.IsNullOrEmpty(report.ReporterEmail) ? "Unknown" : report.ReporterEmail)</td>
+                        <td>@report.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-success" asp-action="Details" asp-route-id="@report.Id">Review</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
