@@ -13,5 +13,9 @@ namespace UrbanHazardMap.Services
         Task<IssueReport?> GetByIdAsync(int id);
 
         Task<int> CreateAsync(string title, string description, double latitude, double longitude, IEnumerable<int> categoryIds, string? userId);
+
+        Task<bool> ApproveAsync(int id);
+
+        Task<bool> RejectAsync(int id, string? reason);
     }
 }

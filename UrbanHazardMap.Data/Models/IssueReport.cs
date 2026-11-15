@@ -19,6 +19,9 @@ namespace UrbanHazardMap.Data.Models
         public string? ReportedById { get; set; }
         public IdentityUser? ReportedByUser { get; set; }
         public string? PhotoPath { get; set; }
+        [MaxLength(500)]
+        public string? RejectionReason { get; set; }
+        public DateTime? ReviewedAt { get; set; }
         public ReportStatus Status { get; set; } = ReportStatus.Pending;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
