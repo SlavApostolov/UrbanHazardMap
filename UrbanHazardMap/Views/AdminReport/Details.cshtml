@@ -1,0 +1,83 @@
+@using System.Globalization
+@using UrbanHazardMap.ViewModels
+@model AdminReportDetailsViewModel
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+}
+
+@{
+    ViewData["Title"] = "Review Report";
+
+    var status = Model.Status.ToString();
+    var badgeClass = status switch
+    {
+        "Pending" => "bg-warning text-dark",
+        "Approved" => "bg-success",
+        "Rejected" => "bg-danger",
+        _ => "bg-secondary"
+    };
+    var reporter = string.IsNullOrEmpty(Model.ReporterEmail) ? "Unknown" : Model.ReporterEmail;
+}
+
+<a asp-action="Index" class="text-decoration-none">&larr; Back to pending reports</a>
+
+<div class="row mt-3">
+    <div class="col-lg-7 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h2 class="mb-0">@Model.Title</h2>
+                    <span class="badge @badgeClass">@status</span>
+                </div>
+
+                <p class="text-muted mb-4">
+                    Reported by @reporter on @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm") UTC
+                </p>
+
+                <h5>Description</h5>
+                <p class="report-description">@Model.Description</p>
+
+                <h5 class="mt-4">Categories and responsible institutions</h5>
+                <ul class="list-group list-group-flush mb-4">
+                    @foreach (var category in Model.Categories)
+                    {
+                        <li class="list-group-item px-0">
+                            <span class="category-dot" style="background-color: @category.Color"></span><strong>@category.Title</strong>
+                            <div class="text-muted small">Will be notified: @category.InstitutionName</div>
+                        </li>
+                    }
+                </ul>
+
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-success" disabled>Approve</button>
+                    <button type="button" class="btn btn-outline-danger" disabled>Reject</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body p-2">
+                <div id="detailsMap" class="admin-map"></div>
+                <div class="text-muted small px-2 pt-2">
+                    @Model.Latitude.ToString("0.000000", CultureInfo.InvariantCulture), @Model.Longitude.ToString("0.000000", CultureInfo.InvariantCulture)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const position = [@Model.Latitude.ToString(CultureInfo.InvariantCulture), @Model.Longitude.ToString(CultureInfo.InvariantCulture)];
+        const map = L.map('detailsMap', { scrollWheelZoom: false }).setView(position, 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        L.marker(position).addTo(map);
+    </script>
+}

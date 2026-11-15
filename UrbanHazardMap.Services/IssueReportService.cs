@@ -30,6 +30,26 @@ namespace UrbanHazardMap.Services
                 .ToListAsync();
         }
 
+        public async Task<List<IssueReport>> GetByStatusAsync(ReportStatus status)
+        {
+            return await _context.IssueReports
+                .Include(report => report.Categories)
+                .Include(report => report.ReportedByUser)
+                .Where(report => report.Status == status)
+                .OrderByDescending(report => report.CreatedAt)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<IssueReport?> GetByIdAsync(int id)
+        {
+            return await _context.IssueReports
+                .Include(report => report.Categories)
+                .ThenInclude(Category => Category.Institution)
+                .Include(report => report.ReportedByUser)
+                .FirstOrDefaultAsync(report => report.Id == id);
+        }
+
         public async Task<int> CreateAsync(string title, string description, double latitude, double longitude, IEnumerable<int> categoryIds, string? userId)
         {
             var categories = await _context.Categories
