@@ -77,5 +77,39 @@ namespace UrbanHazardMap.Services
             await _context.SaveChangesAsync();
             return issueReport.Id;
         }
+
+        public async Task<bool> ApproveAsync(int id)
+        {
+            var updatedRows = await _context.IssueReports
+                .Where(report => report.Id == id && report.Status == ReportStatus.Pending)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(report => report.Status, ReportStatus.Approved)
+                    .SetProperty(report => report.ReviewedAt, (DateTime?)DateTime.UtcNow));
+
+            return updatedRows == 1;
+        }
+
+        public async Task<bool> RejectAsync(int id, string? reason)
+        {
+            var trimmedReason = reason?.Trim();
+
+            if (string.IsNullOrEmpty(trimmedReason))
+            {
+                trimmedReason = null;
+            }
+            else if (trimmedReason.Length > 500)
+            {
+                trimmedReason = trimmedReason.Substring(0, 500);
+            }
+
+            var updatedRows = await _context.IssueReports
+                .Where(report => report.Id == id && report.Status == ReportStatus.Pending)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(report => report.Status, ReportStatus.Rejected)
+                    .SetProperty(report => report.RejectionReason, trimmedReason)
+                    .SetProperty(report => report.ReviewedAt, (DateTime?)DateTime.UtcNow));
+
+            return updatedRows == 1;
+        }
     }
 }

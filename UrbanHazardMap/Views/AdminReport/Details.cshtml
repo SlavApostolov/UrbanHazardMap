@@ -49,10 +49,33 @@
                     }
                 </ul>
 
-                <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-success" disabled>Approve</button>
-                    <button type="button" class="btn btn-outline-danger" disabled>Reject</button>
-                </div>
+                @if (status == "Pending")
+                {
+                    <div class="d-flex gap-2">
+                        <form method="post" asp-action="Approve" asp-route-id="@Model.Id">
+                            <button type="submit" class="btn btn-success">Approve</button>
+                        </form>
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="collapse" data-bs-target="#rejectForm" aria-expanded="false" aria-controls="rejectForm">Reject</button>
+                    </div>
+
+                    <div class="collapse mt-3" id="rejectForm">
+                        <form method="post" asp-action="Reject" asp-route-id="@Model.Id">
+                            <label for="reason" class="form-label">Reason (optional)</label>
+                            <textarea id="reason" name="reason" class="form-control mb-2" rows="3" maxlength="500" placeholder="Why is this report rejected?"></textarea>
+                            <button type="submit" class="btn btn-danger">Confirm rejection</button>
+                        </form>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-secondary mb-0">
+                        <div>This report was reviewed @(Model.ReviewedAt.HasValue ? "on " + Model.ReviewedAt.Value.ToString("yyyy-MM-dd HH:mm") + " UTC" : "earlier").</div>
+                        @if (!string.IsNullOrEmpty(Model.RejectionReason))
+                        {
+                            <div class="mt-1"><strong>Reason:</strong> <span class="report-description">@Model.RejectionReason</span></div>
+                        }
+                    </div>
+                }
             </div>
         </div>
     </div>

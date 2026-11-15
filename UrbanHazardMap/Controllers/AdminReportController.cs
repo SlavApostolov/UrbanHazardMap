@@ -54,10 +54,48 @@ namespace UrbanHazardMap.Controllers
                 Latitude = report.Latitude,
                 Longitude = report.Longitude,
                 Status = report.Status.ToString(),
+                ReviewedAt = report.ReviewedAt,
+                RejectionReason = report.RejectionReason,
                 Categories = report.Categories.Select(MapCategory).ToList()
             };
 
             return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Approve(int id)
+        {
+            var approved = await _issueReportService.ApproveAsync(id);
+
+            SetMessage(approved, "Report approved.");
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reject(int id, string? reason)
+        {
+            var rejected = await _issueReportService.RejectAsync(id, reason);
+
+            SetMessage(rejected, "Report rejected.");
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private void SetMessage(bool succeeded, string successMessage)
+        {
+            if (succeeded)
+            {
+                TempData["Message"] = successMessage;
+                TempData["MessageType"] = "success";
+            }
+            else
+            {
+                TempData["Message"] = "This report was not found or was already reviewed.";
+                TempData["MessageType"] = "warning";
+            }
         }
 
         private static AdminReportCategoryViewModel MapCategory(Category category)

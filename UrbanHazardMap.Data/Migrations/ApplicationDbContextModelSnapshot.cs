@@ -326,8 +326,15 @@ namespace UrbanHazardMap.Data.Migrations
                     b.Property<string>("PhotoPath")
                         .HasColumnType("text");
 
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
                     b.Property<string>("ReportedById")
                         .HasColumnType("text");
+
+                    b.Property<DateTime?>("ReviewedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Status")
                         .IsRequired()
