@@ -4,6 +4,7 @@ using UrbanHazardMap.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using UrbanHazardMap.Infrastructure;
 
 namespace UrbanHazardMap
 {
@@ -25,6 +26,7 @@ namespace UrbanHazardMap
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IIssueReportService, IssueReportService>();
+            builder.Services.AddScoped<IPhotoStorageService,PhotoStorageService>();
 
             var app = builder.Build();
 

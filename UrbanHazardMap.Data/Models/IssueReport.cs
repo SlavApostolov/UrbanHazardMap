@@ -24,7 +24,6 @@ namespace UrbanHazardMap.Data.Models
         public DateTime? ReviewedAt { get; set; }
         public ReportStatus Status { get; set; } = ReportStatus.Pending;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
         public ICollection<Category> Categories { get; set; } = new List<Category>();
 
         public ICollection<VolunteerEvent> VolunteerEvents { get; set; } = new List<VolunteerEvent>();

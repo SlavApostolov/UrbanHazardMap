@@ -50,7 +50,7 @@ namespace UrbanHazardMap.Services
                 .FirstOrDefaultAsync(report => report.Id == id);
         }
 
-        public async Task<int> CreateAsync(string title, string description, double latitude, double longitude, IEnumerable<int> categoryIds, string? userId)
+        public async Task<int> CreateAsync(string title, string description, double latitude, double longitude, IEnumerable<int> categoryIds, string? userId,string? photoPath = null)
         {
             var categories = await _context.Categories
                 .Where(category => categoryIds.Contains(category.Id))
@@ -69,6 +69,7 @@ namespace UrbanHazardMap.Services
                 Longitude = longitude,
                 Categories = categories,
                 ReportedById = userId,
+                PhotoPath = photoPath,
                 Status = ReportStatus.Pending,
                 CreatedAt = DateTime.UtcNow
             };
