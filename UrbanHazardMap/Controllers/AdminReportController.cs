@@ -56,6 +56,7 @@ namespace UrbanHazardMap.Controllers
                 Status = report.Status.ToString(),
                 ReviewedAt = report.ReviewedAt,
                 RejectionReason = report.RejectionReason,
+                PhotoPath = report.PhotoPath,
                 Categories = report.Categories.Select(MapCategory).ToList()
             };
 

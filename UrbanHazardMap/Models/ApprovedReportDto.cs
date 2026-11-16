@@ -12,6 +12,7 @@ namespace UrbanHazardMap.Models
 
         public double Longitude { get; set; }
 
+        public string? PhotoPath { get; set; }
         public DateTime CreatedAt { get; set; }
 
         public List<ApprovedReportCategoryDto> Categories { get; set; } = new();

@@ -12,6 +12,8 @@
         public string Status { get; set; } = string.Empty;
         public DateTime? ReviewedAt { get; set; }
         public string? RejectionReason { get; set; }
+
+        public string? PhotoPath { get; set; }
         public List<AdminReportCategoryViewModel> Categories { get; set; } = new List<AdminReportCategoryViewModel>();
     }
 }

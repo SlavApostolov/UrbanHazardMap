@@ -98,43 +98,66 @@
                 message.hidden = false;
             });
 
-        function buildReportPopup(report) {
-            var popup = document.createElement('div');
+       
+function buildReportPopup(report) {
+    var popup = document.createElement('div');
+    popup.style.minWidth = '200px';
+    popup.style.maxWidth = '260px';
 
-            var title = document.createElement('strong');
-            title.textContent = report.title;
-            popup.appendChild(title);
+    var title = document.createElement('strong');
+    title.textContent = report.title;
+    popup.appendChild(title);
 
-            var description = document.createElement('p');
-            description.textContent = report.description;
-            description.style.margin = '6px 0';
-            popup.appendChild(description);
+    var description = document.createElement('p');
+    description.textContent = report.description;
+    description.style.margin = '6px 0';
+    popup.appendChild(description);
 
-            var created = document.createElement('p');
-            created.textContent = new Date(report.createdAt).toLocaleDateString();
-            created.style.margin = '0 0 6px';
-            popup.appendChild(created);
+    var created = document.createElement('p');
+    created.textContent = new Date(report.createdAt).toLocaleDateString();
+    created.style.margin = '0 0 6px';
+    popup.appendChild(created);
 
-            (report.categories || []).forEach(function (category) {
-                var row = document.createElement('div');
+    (report.categories || []).forEach(function (category) {
+        var row = document.createElement('div');
 
-                var dot = document.createElement('span');
-                dot.style.display = 'inline-block';
-                dot.style.width = '10px';
-                dot.style.height = '10px';
-                dot.style.marginRight = '6px';
-                dot.style.borderRadius = '50%';
-                dot.style.backgroundColor = category.color;
+        var dot = document.createElement('span');
+        dot.style.display = 'inline-block';
+        dot.style.width = '10px';
+        dot.style.height = '10px';
+        dot.style.marginRight = '6px';
+        dot.style.borderRadius = '50%';
+        dot.style.backgroundColor = category.color;
 
-                var name = document.createElement('span');
-                name.textContent = category.title;
+        var name = document.createElement('span');
+        name.textContent = category.title;
 
-                row.appendChild(dot);
-                row.appendChild(name);
-                popup.appendChild(row);
-            });
+        row.appendChild(dot);
+        row.appendChild(name);
+        popup.appendChild(row);
+    });
 
-            return popup;
-        }
+    // Display the uploaded photo if one exists
+    if (report.photoPath) {
+        var image = document.createElement('img');
+
+        image.src = report.photoPath;
+        image.alt = 'Photo of the reported hazard';
+        image.loading = 'lazy';
+
+        image.style.display = 'block';
+        image.style.width = '100%';
+        image.style.maxWidth = '240px';
+        image.style.maxHeight = '180px';
+        image.style.objectFit = 'cover';
+        image.style.borderRadius = '8px';
+        image.style.marginTop = '10px';
+
+        popup.appendChild(image);
+    }
+
+    return popup;
+}
+
     </script>
 }

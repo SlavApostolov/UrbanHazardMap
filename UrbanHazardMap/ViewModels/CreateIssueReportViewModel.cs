@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
+using Microsoft.AspNetCore.Http;
 namespace UrbanHazardMap.ViewModels
 {
     public class CreateIssueReportViewModel
@@ -22,6 +22,8 @@ namespace UrbanHazardMap.ViewModels
 
         [MinLength(1, ErrorMessage = "Select at least one category.")]
         public List<int> CategoryIds { get; set; } = new();
+
+        public IFormFile? Photo { get; set; }
 
         public List<CategoryOptionViewModel> AvailableCategories { get; set; } = new();
     }

@@ -27,6 +27,7 @@ namespace UrbanHazardMap.Controllers
                 Description = report.Description,
                 Latitude = report.Latitude,
                 Longitude = report.Longitude,
+                PhotoPath = report.PhotoPath,
                 CreatedAt = report.CreatedAt,
                 Categories = report.Categories
                     .Select(category => new ApprovedReportCategoryDto

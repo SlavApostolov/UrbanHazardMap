@@ -17,7 +17,7 @@
                 <h2 class="mb-1">Report a Hazard</h2>
                 <p class="text-muted mb-4">Describe the problem and choose the categories it belongs to.</p>
 
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="Title" class="form-label">Title</label>
                         <input type="text" class="form-control" asp-for="Title" placeholder="e.g. Large pothole on the main road" />
@@ -54,6 +54,25 @@
                         }
                         <span asp-validation-for="CategoryIds" class="text-danger"></span>
                     </div>
+                    <div class="mb-3">
+    <label asp-for="Photo" class="form-label">
+        Photo (optional)
+    </label>
+
+    <input type="file"
+           asp-for="Photo"
+           class="form-control"
+           accept="image/jpeg,image/png" />
+
+    <span asp-validation-for="Photo"
+          class="text-danger"></span>
+
+    <div class="form-text">
+        Optional. JPG or PNG, up to 5 MB.
+        Please do not photograph people's faces or
+        vehicle registration plates.
+    </div>
+</div>
                     <button type="submit" class="btn btn-success w-100">Submit Report</button>
                 </form>
             </div>
