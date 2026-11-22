@@ -24,6 +24,7 @@ namespace UrbanHazardMap.Services
         {
             return await _context.IssueReports
                 .Include(report => report.Categories)
+                .Include(report => report.Confirmations)
                 .Where(report => report.Status == ReportStatus.Approved)
                 .OrderByDescending(report => report.CreatedAt)
                 .AsNoTracking()
@@ -83,6 +84,12 @@ namespace UrbanHazardMap.Services
             return await _context.ReportConfirmations
                 .Where(c => c.IssueReportId == reportId)
                 .CountAsync();
+        }
+
+        public async Task<bool> HasUserConfirmedAsync(int reportId, string userId)
+        {
+            return await _context.ReportConfirmations
+                .AnyAsync(c => c.IssueReportId == reportId && c.UserId == userId);
         }
 
         public async Task<bool> ToggleConfirmationAsync(int reportId, string userId)

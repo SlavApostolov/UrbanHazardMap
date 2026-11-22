@@ -138,6 +138,12 @@ public async Task<IActionResult> Create(
                 return NotFound();
             }
 
+            var isAuthenticated = userId != null;
+            var isOwner = isAuthenticated && report.ReportedById == userId;
+            var confirmationCount = await _issueReportService.GetConfirmationCountAsync(id);
+            var hasConfirmed = isAuthenticated &&
+                await _issueReportService.HasUserConfirmedAsync(id, userId!);
+
             var model = new IssueReportDetailsViewModel
             {
                 Id = report.Id,
@@ -148,6 +154,10 @@ public async Task<IActionResult> Create(
                 Longitude = report.Longitude,
                 Status = report.Status.ToString(),
                 PhotoPath = report.PhotoPath,
+                ConfirmationCount = confirmationCount,
+                IsAuthenticated = isAuthenticated,
+                HasConfirmed = hasConfirmed,
+                CanConfirm = isAuthenticated && !isOwner && report.Status == ReportStatus.Approved,
                 Categories = report.Categories.Select(MapCategory).ToList()
             };
             return View(model);

@@ -118,6 +118,15 @@ function buildReportPopup(report) {
     created.style.margin = '0 0 6px';
     popup.appendChild(created);
 
+    if (report.confirmationCount > 0) {
+        var confirmations = document.createElement('p');
+        confirmations.textContent = report.confirmationCount === 1
+            ? '1 person confirmed this problem'
+            : report.confirmationCount + ' people confirmed this problem';
+        confirmations.style.margin = '0 0 6px';
+        popup.appendChild(confirmations);
+    }
+
     (report.categories || []).forEach(function (category) {
         var row = document.createElement('div');
 

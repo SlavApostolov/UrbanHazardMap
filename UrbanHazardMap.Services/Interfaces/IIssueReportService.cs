@@ -16,6 +16,8 @@ namespace UrbanHazardMap.Services
 
         Task<int> GetConfirmationCountAsync(int reportId);
 
+        Task<bool> HasUserConfirmedAsync(int reportId, string userId);
+
         Task<bool> ToggleConfirmationAsync(int reportId, string userId);
 
         Task<int> CreateAsync(string title, string description, double latitude, double longitude, IEnumerable<int> categoryIds, string? userId,string? photoPath = null);
