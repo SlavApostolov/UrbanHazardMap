@@ -27,9 +27,24 @@ namespace UrbanHazardMap
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IIssueReportService, IssueReportService>();
             builder.Services.AddScoped<IPhotoStorageService,PhotoStorageService>();
+            builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("Email"));
 
+if (!string.IsNullOrWhiteSpace(
+    builder.Configuration["Email:Host"]))
+{
+    builder.Services.AddScoped<
+        IEmailService,
+        SmtpEmailService>();
+}
+else
+{
+    builder.Services.AddScoped<
+        IEmailService,
+        ConsoleEmailService>();
+}
             var app = builder.Build();
-
+            
             using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider
