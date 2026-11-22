@@ -46,8 +46,36 @@ namespace UrbanHazardMap.Services
             return await _context.IssueReports
                 .Include(report => report.Categories)
                 .ThenInclude(Category => Category.Institution)
-                .Include(report => report.ReportedByUser)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(report => report.Id == id);
+        }
+        public async Task<IssueReport?> GetVisibleByIdAsync(int id, string? userId, bool isAdmin)
+        {
+            
+            var report =   await _context.IssueReports
+                .Include(report => report.Categories)
+                .ThenInclude(Category => Category.Institution)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(report => report.Id == id);
+
+            if (report == null)
+            {
+                return null;
+            }
+            else if (report.Status == ReportStatus.Approved || report.Status == ReportStatus.Resolved)
+            {
+                return report;
+            }
+            else if (isAdmin)
+            {
+                return report;
+            }
+            else if (userId != null && userId == report.ReportedById)
+            {
+                return report;
+            }
+
+            return null;
         }
 
         public async Task<int> CreateAsync(string title, string description, double latitude, double longitude, IEnumerable<int> categoryIds, string? userId,string? photoPath = null)

@@ -20,3 +20,20 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.category-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+    border-radius: 50%;
+}
+
+.report-description {
+    white-space: pre-line;
+}
+
+.details-map {
+    height: 320px;
+    border-radius: 8px;
+}
