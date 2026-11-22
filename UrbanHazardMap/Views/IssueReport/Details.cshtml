@@ -1,0 +1,85 @@
+﻿@using System.Globalization
+@using UrbanHazardMap.ViewModels
+@model IssueReportDetailsViewModel
+
+@{
+    ViewData["Title"] = "Report details";
+
+    var status = Model.Status;
+    var badgeClass = status switch
+    {
+        "Pending" => "bg-warning text-dark",
+        "Approved" => "bg-success",
+        "Rejected" => "bg-danger",
+        "Resolved" => "bg-primary",
+        _ => "bg-secondary"
+    };
+}
+
+<a asp-controller="Home" asp-action="Index" class="text-decoration-none">&larr; Back to the map</a>
+
+<div class="row mt-3">
+    <div class="col-lg-7 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h2 class="mb-0">@Model.Title</h2>
+                    <span class="badge @badgeClass">@status</span>
+                </div>
+
+                <p class="text-muted mb-4">
+                    Reported on @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm") UTC
+                </p>
+
+                <h5>Description</h5>
+                <p class="report-description">@Model.Description</p>
+
+                @if (!string.IsNullOrWhiteSpace(Model.PhotoPath))
+                {
+                    <div class="mt-4">
+                        <h5>Photo</h5>
+                        <img src="@Model.PhotoPath"
+                             alt="Photo attached to the hazard report"
+                             class="img-fluid rounded border"
+                             style="max-width: 100%; max-height: 400px; object-fit: contain;" />
+                    </div>
+                }
+
+                <h5 class="mt-4">Categories and responsible institutions</h5>
+                <ul class="list-group list-group-flush mb-0">
+                    @foreach (var category in Model.Categories)
+                    {
+                        <li class="list-group-item px-0">
+                            <span class="category-dot" style="background-color: @category.Color"></span><strong>@category.Title</strong>
+                            <div class="text-muted small">Responsible institution: @category.InstitutionName</div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body p-2">
+                <div id="detailsMap" class="details-map"></div>
+                <div class="text-muted small px-2 pt-2">
+                    @Model.Latitude.ToString("0.000000", CultureInfo.InvariantCulture), @Model.Longitude.ToString("0.000000", CultureInfo.InvariantCulture)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const position = [@Model.Latitude.ToString(CultureInfo.InvariantCulture), @Model.Longitude.ToString(CultureInfo.InvariantCulture)];
+        const map = L.map('detailsMap', { scrollWheelZoom: false }).setView(position, 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        L.marker(position).addTo(map);
+    </script>
+}
