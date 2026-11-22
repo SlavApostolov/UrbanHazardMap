@@ -27,5 +27,7 @@ namespace UrbanHazardMap.Data.Models
         public ICollection<Category> Categories { get; set; } = new List<Category>();
 
         public ICollection<VolunteerEvent> VolunteerEvents { get; set; } = new List<VolunteerEvent>();
+
+        public ICollection<ReportConfirmation> Confirmations { get; set; } = new List<ReportConfirmation>();
     }
 }

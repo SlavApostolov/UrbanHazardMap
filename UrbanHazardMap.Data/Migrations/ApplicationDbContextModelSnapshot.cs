@@ -352,6 +352,34 @@ namespace UrbanHazardMap.Data.Migrations
                     b.ToTable("IssueReports");
                 });
 
+            modelBuilder.Entity("UrbanHazardMap.Data.Models.ReportConfirmation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("IssueReportId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("IssueReportId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("ReportConfirmations");
+                });
+
             modelBuilder.Entity("UrbanHazardMap.Data.Models.VolunteerEvent", b =>
                 {
                     b.Property<int>("Id")
@@ -476,6 +504,25 @@ namespace UrbanHazardMap.Data.Migrations
                     b.Navigation("ReportedByUser");
                 });
 
+            modelBuilder.Entity("UrbanHazardMap.Data.Models.ReportConfirmation", b =>
+                {
+                    b.HasOne("UrbanHazardMap.Data.Models.IssueReport", "IssueReport")
+                        .WithMany("Confirmations")
+                        .HasForeignKey("IssueReportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IssueReport");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("UrbanHazardMap.Data.Models.VolunteerEvent", b =>
                 {
                     b.HasOne("UrbanHazardMap.Data.Models.IssueReport", "IssueReport")
@@ -495,6 +542,8 @@ namespace UrbanHazardMap.Data.Migrations
 
             modelBuilder.Entity("UrbanHazardMap.Data.Models.IssueReport", b =>
                 {
+                    b.Navigation("Confirmations");
+
                     b.Navigation("VolunteerEvents");
                 });
 #pragma warning restore 612, 618

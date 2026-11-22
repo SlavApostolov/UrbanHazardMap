@@ -15,6 +15,8 @@ namespace UrbanHazardMap.Models
         public string? PhotoPath { get; set; }
         public DateTime CreatedAt { get; set; }
 
+        public int ConfirmationCount { get; set; }
+
         public List<ApprovedReportCategoryDto> Categories { get; set; } = new();
     }
 

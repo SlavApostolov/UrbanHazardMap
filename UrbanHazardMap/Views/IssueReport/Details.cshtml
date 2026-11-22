@@ -34,6 +34,29 @@
                 <h5>Description</h5>
                 <p class="report-description">@Model.Description</p>
 
+                @if (status == "Approved" || status == "Resolved")
+                {
+                    <div class="d-flex flex-wrap align-items-center gap-3 mt-4">
+                        <span>
+                            <strong>@Model.ConfirmationCount</strong>
+                            @(Model.ConfirmationCount == 1 ? "person has" : "people have") confirmed this problem
+                        </span>
+
+                        @if (Model.CanConfirm)
+                        {
+                            <form method="post" asp-action="Confirm" asp-route-id="@Model.Id" class="mb-0">
+                                <button type="submit" class="btn btn-sm @(Model.HasConfirmed ? "btn-outline-secondary" : "btn-primary")">
+                                    @(Model.HasConfirmed ? "Remove my confirmation" : "Confirm this problem")
+                                </button>
+                            </form>
+                        }
+                        else if (!Model.IsAuthenticated && status == "Approved")
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Context.Request.Path">Log in to confirm this problem</a>
+                        }
+                    </div>
+                }
+
                 @if (!string.IsNullOrWhiteSpace(Model.PhotoPath))
                 {
                     <div class="mt-4">

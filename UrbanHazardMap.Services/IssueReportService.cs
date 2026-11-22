@@ -24,6 +24,7 @@ namespace UrbanHazardMap.Services
         {
             return await _context.IssueReports
                 .Include(report => report.Categories)
+                .Include(report => report.Confirmations)
                 .Where(report => report.Status == ReportStatus.Approved)
                 .OrderByDescending(report => report.CreatedAt)
                 .AsNoTracking()
@@ -76,6 +77,63 @@ namespace UrbanHazardMap.Services
             }
 
             return null;
+        }
+
+        public async Task<int> GetConfirmationCountAsync(int reportId)
+        {
+            return await _context.ReportConfirmations
+                .Where(c => c.IssueReportId == reportId)
+                .CountAsync();
+        }
+
+        public async Task<bool> HasUserConfirmedAsync(int reportId, string userId)
+        {
+            return await _context.ReportConfirmations
+                .AnyAsync(c => c.IssueReportId == reportId && c.UserId == userId);
+        }
+
+        public async Task<bool> ToggleConfirmationAsync(int reportId, string userId)
+        {
+            var report = await _context.IssueReports
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Id == reportId);
+
+            // Only existing, approved reports can be confirmed, and never by their own author.
+            if (report == null ||
+                report.Status != ReportStatus.Approved ||
+                report.ReportedById == userId)
+            {
+                return false;
+            }
+
+            var existingConfirmation = await _context.ReportConfirmations
+                .FirstOrDefaultAsync(c => c.IssueReportId == reportId && c.UserId == userId);
+
+            try
+            {
+                if (existingConfirmation != null)
+                {
+                    _context.ReportConfirmations.Remove(existingConfirmation);
+                }
+                else
+                {
+                    _context.ReportConfirmations.Add(new ReportConfirmation
+                    {
+                        IssueReportId = reportId,
+                        UserId = userId,
+                        CreatedAt = DateTime.UtcNow
+                    });
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                // A double click: the unique index (or a vanished row) means the
+                // other request already did the work, so this is not an error.
+            }
+
+            return true;
         }
 
         public async Task<int> CreateAsync(string title, string description, double latitude, double longitude, IEnumerable<int> categoryIds, string? userId,string? photoPath = null)
