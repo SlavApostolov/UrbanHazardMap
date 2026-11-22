@@ -153,6 +153,24 @@ public async Task<IActionResult> Create(
             return View(model);
         }
 
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Confirm(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Challenge();
+            }
+
+            // The service decides if the vote is allowed. If it is blocked (own report,
+            // not approved), nothing changes and the user simply returns to the page.
+            await _issueReportService.ToggleConfirmationAsync(id, userId);
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
 
         public IActionResult Success()
         {
