@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UrbanHazardMap.Services;
 using UrbanHazardMap.ViewModels;
+using UrbanHazardMap.Data.Models;
+using UrbanHazardMap.Data;
 
 namespace UrbanHazardMap.Controllers
 {
@@ -124,6 +126,33 @@ public async Task<IActionResult> Create(
     return RedirectToAction(nameof(Success));
 }
 
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var isAdmin = User.IsInRole(RoleNames.Admin);
+            var report = await _issueReportService.GetVisibleByIdAsync(id, userId, isAdmin);
+
+            if (report == null)
+            {
+                return NotFound();
+            }
+
+            var model = new IssueReportDetailsViewModel
+            {
+                Id = report.Id,
+                Title = report.Title,
+                Description = report.Description,
+                CreatedAt = report.CreatedAt,
+                Latitude = report.Latitude,
+                Longitude = report.Longitude,
+                Status = report.Status.ToString(),
+                PhotoPath = report.PhotoPath,
+                Categories = report.Categories.Select(MapCategory).ToList()
+            };
+            return View(model);
+        }
+
 
         public IActionResult Success()
         {
@@ -142,5 +171,18 @@ public async Task<IActionResult> Create(
                 })
                 .ToList();
         }
+
+        private static AdminReportCategoryViewModel MapCategory(Category category)
+        {
+            return new AdminReportCategoryViewModel
+            {
+                Title = category.Title,
+                Color = category.MarkedHexColor,
+                InstitutionName = category.Institution?.Name ?? string.Empty
+            };
+        }
+
     }
 }
+
+
