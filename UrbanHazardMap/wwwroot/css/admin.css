@@ -1,16 +1,4 @@
-.category-dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin-right: 6px;
-    border-radius: 50%;
-}
-
 .admin-map {
     height: 320px;
     border-radius: 8px;
-}
-
-.report-description {
-    white-space: pre-line;
 }
