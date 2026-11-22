@@ -12,6 +12,8 @@ namespace UrbanHazardMap.Services
 
         Task<IssueReport?> GetByIdAsync(int id);
 
+        Task<IssueReport?> GetVisibleByIdAsync(int id, string? userId, bool isAdmin);
+
         Task<int> CreateAsync(string title, string description, double latitude, double longitude, IEnumerable<int> categoryIds, string? userId,string? photoPath = null);
 
         Task<bool> ApproveAsync(int id);
