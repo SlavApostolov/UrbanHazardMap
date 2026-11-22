@@ -156,6 +156,14 @@ function buildReportPopup(report) {
         popup.appendChild(image);
     }
 
+    // Link to the full public details page of the report
+    var detailsLink = document.createElement('a');
+    detailsLink.href = '/IssueReport/Details/' + encodeURIComponent(report.id);
+    detailsLink.textContent = 'View details';
+    detailsLink.style.display = 'inline-block';
+    detailsLink.style.marginTop = '10px';
+    popup.appendChild(detailsLink);
+
     return popup;
 }
 
