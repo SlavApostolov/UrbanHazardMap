@@ -22,6 +22,8 @@ namespace UrbanHazardMap.Data
 
         public DbSet<VolunteerEvent> VolunteerEvents { get; set; }
 
+        public DbSet<ReportConfirmation> ReportConfirmations { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -44,6 +46,23 @@ namespace UrbanHazardMap.Data
                 .WithMany()
                 .HasForeignKey(i => i.ReportedById)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<ReportConfirmation>()
+                .HasIndex(c => new { c.IssueReportId, c.UserId })
+                .IsUnique();
+
+            // When a user is deleted (GDPR, Task 37), their confirmations are deleted too.
+            modelBuilder.Entity<ReportConfirmation>()
+                .HasOne(c => c.User)
+                .WithMany()
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ReportConfirmation>()
+                .HasOne(c => c.IssueReport)
+                .WithMany(r => r.Confirmations)
+                .HasForeignKey(c => c.IssueReportId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
