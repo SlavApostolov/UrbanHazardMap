@@ -19,9 +19,19 @@
     };
     var reporter = string.IsNullOrEmpty(Model.ReporterEmail) ? "Unknown" : Model.ReporterEmail;
 }
+<a asp-action="Index"
+   asp-route-tab="@(Model.Status == "Approved" ? "approved" : "pending")"
+   class="text-decoration-none">
+    &larr; Back to reports
+</a>
 
-<a asp-action="Index" class="text-decoration-none">&larr; Back to pending reports</a>
-
+@if (TempData["Message"] is string message)
+{
+    <div class="alert alert-@(TempData["MessageType"] ?? "info") alert-dismissible fade show mt-3" role="alert">
+        @message
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 <div class="row mt-3">
     <div class="col-lg-7 mb-4">
         <div class="card shadow-sm">
@@ -61,7 +71,7 @@
                     {
                         <li class="list-group-item px-0">
                             <span class="category-dot" style="background-color: @category.Color"></span><strong>@category.Title</strong>
-                            <div class="text-muted small">Will be notified: @category.InstitutionName</div>
+                            <div class="text-muted small">Responsible institution: @category.InstitutionName</div>
                         </li>
                     }
                 </ul>
@@ -95,6 +105,87 @@
                 }
             </div>
         </div>
+
+
+<div class="card shadow-sm mt-4">
+    <div class="card-body p-4">
+
+        <h5 class="mb-3">
+            <i class="bi bi-envelope-check me-2"></i>
+            Institution Notifications
+        </h5>
+
+        @if (Model.Notifications == null || !Model.Notifications.Any())
+        {
+            <div class="alert alert-light border mb-0">
+                <i class="bi bi-info-circle me-2"></i>
+                No institution notifications have been sent yet.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Institution</th>
+                            <th>Sent At (UTC)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var notification in Model.Notifications)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>
+                                        @notification.Institution?.Name
+                                    </strong>
+                                </td>
+
+                                <td class="text-muted small">
+                                    @notification.SentAt.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss")
+                                </td>
+
+                                <td>
+                                    @if (notification.IsSuccessful)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle me-1"></i>
+                                            OK
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-x-circle me-1"></i>
+                                            Failed
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+
+                            @if (!notification.IsSuccessful &&
+                                 !string.IsNullOrWhiteSpace(notification.Error))
+                            {
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="alert alert-danger small mb-0">
+                                            <strong>Error:</strong>
+                                            @notification.Error
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
     </div>
 
     <div class="col-lg-5 mb-4">

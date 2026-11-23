@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using UrbanHazardMap.Data;
 using UrbanHazardMap.Data.Models;
 
@@ -7,11 +8,18 @@ namespace UrbanHazardMap.Services
     public class IssueReportService : IIssueReportService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IReportNotificationService _notificationService;
+private readonly ILogger<IssueReportService> _logger;
 
-        public IssueReportService(ApplicationDbContext applicationDbContext)
-        {
-            _context = applicationDbContext;
-        }
+        public IssueReportService(
+    ApplicationDbContext applicationDbContext,
+    IReportNotificationService notificationService,
+    ILogger<IssueReportService> logger)
+{
+    _context = applicationDbContext;
+    _notificationService = notificationService;
+    _logger = logger;
+}
 
         public async Task<List<Category>> GetAllCategoriesAsync()
         {
@@ -165,16 +173,59 @@ namespace UrbanHazardMap.Services
             return issueReport.Id;
         }
 
-        public async Task<bool> ApproveAsync(int id)
-        {
-            var updatedRows = await _context.IssueReports
-                .Where(report => report.Id == id && report.Status == ReportStatus.Pending)
-                .ExecuteUpdateAsync(setters => setters
-                    .SetProperty(report => report.Status, ReportStatus.Approved)
-                    .SetProperty(report => report.ReviewedAt, (DateTime?)DateTime.UtcNow));
+        
+public async Task<ApprovalResult> ApproveAsync(int id)
+{
+    var updatedRows = await _context.IssueReports
+        .Where(report =>
+            report.Id == id &&
+            report.Status == ReportStatus.Pending)
+        .ExecuteUpdateAsync(setters => setters
+            .SetProperty(
+                report => report.Status,
+                ReportStatus.Approved)
+            .SetProperty(
+                report => report.ReviewedAt,
+                (DateTime?)DateTime.UtcNow));
 
-            return updatedRows == 1;
-        }
+    if (updatedRows != 1)
+    {
+        return new ApprovalResult
+        {
+            Approved = false,
+            FailedNotifications = 0
+        };
+    }
+
+    // At this point the report is already approved in PostgreSQL.
+    try
+    {
+        var notifications = await _notificationService
+            .NotifyInstitutionsAsync(id);
+
+        return new ApprovalResult
+        {
+            Approved = true,
+            FailedNotifications = notifications.Count(
+                n => !n.IsSuccessful)
+        };
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(
+            ex,
+            "Notification processing failed for approved report {ReportId}",
+            id);
+
+        // Never undo the saved approval.
+        return new ApprovalResult
+        {
+            Approved = true,
+            FailedNotifications = 1
+        };
+    }
+}
+
 
         public async Task<bool> RejectAsync(int id, string? reason)
         {
@@ -198,5 +249,17 @@ namespace UrbanHazardMap.Services
 
             return updatedRows == 1;
         }
+
+        public async Task<List<ReportNotification>> GetNotificationsAsync(int reportId)
+{
+    return await _context.ReportNotifications
+        .Include(n => n.Institution)
+        .Where(n => n.IssueReportId == reportId)
+        .OrderByDescending(n => n.SentAt)
+        .AsNoTracking()
+        .ToListAsync();
+}
     }
+
+    
 }

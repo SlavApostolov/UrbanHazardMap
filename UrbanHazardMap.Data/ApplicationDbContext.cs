@@ -24,6 +24,9 @@ namespace UrbanHazardMap.Data
 
         public DbSet<ReportConfirmation> ReportConfirmations { get; set; }
 
+        public DbSet<ReportNotification> ReportNotifications { get; set; }
+    = null!;
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -63,6 +66,19 @@ namespace UrbanHazardMap.Data
                 .WithMany(r => r.Confirmations)
                 .HasForeignKey(c => c.IssueReportId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ReportNotification>(entity =>
+{
+            entity.HasOne(n => n.IssueReport)
+                .WithMany()
+                .HasForeignKey(n => n.IssueReportId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(n => n.Institution)
+                .WithMany()
+                .HasForeignKey(n => n.InstitutionId)
+                .OnDelete(DeleteBehavior.Restrict);
+});
         }
     }
 }

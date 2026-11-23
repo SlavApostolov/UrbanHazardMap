@@ -1,4 +1,6 @@
-﻿namespace UrbanHazardMap.ViewModels
+﻿using UrbanHazardMap.Data.Models;
+
+namespace UrbanHazardMap.ViewModels
 {
     public class AdminReportDetailsViewModel
     {
@@ -15,5 +17,6 @@
 
         public string? PhotoPath { get; set; }
         public List<AdminReportCategoryViewModel> Categories { get; set; } = new List<AdminReportCategoryViewModel>();
+        public List<ReportNotification> Notifications { get; set; } = new();
     }
 }
