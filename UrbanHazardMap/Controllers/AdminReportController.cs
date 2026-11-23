@@ -17,62 +17,110 @@ namespace UrbanHazardMap.Controllers
             _issueReportService = issueReportService;
         }
 
-        public async Task<IActionResult> Index()
-        {
-            var reports = await _issueReportService.GetByStatusAsync(ReportStatus.Pending);
+        public async Task<IActionResult> Index(string tab = "pending")
+{
+    tab = tab?.ToLowerInvariant() == "approved"
+        ? "approved"
+        : "pending";
 
-            var model = reports
-                .Select(report => new AdminReportListItemViewModel
-                {
-                    Id = report.Id,
-                    Title = report.Title,
-                    CreatedAt = report.CreatedAt,
-                    ReporterEmail = report.ReportedByUser?.Email ?? string.Empty,
-                    Categories = report.Categories.Select(MapCategory).ToList()
-                })
-                .ToList();
+    var pendingReports = await _issueReportService
+        .GetByStatusAsync(ReportStatus.Pending);
 
-            return View(model);
-        }
+    var approvedReports = await _issueReportService
+        .GetByStatusAsync(ReportStatus.Approved);
 
-        public async Task<IActionResult> Details(int id)
-        {
-            var report = await _issueReportService.GetByIdAsync(id);
+    var rejectedReports = await _issueReportService
+        .GetByStatusAsync(ReportStatus.Rejected);
 
-            if (report == null)
-            {
-                return NotFound();
-            }
+    var selectedReports = tab == "approved"
+        ? approvedReports
+        : pendingReports;
 
-            var model = new AdminReportDetailsViewModel
+    var model = new AdminReportsDashboardViewModel
+    {
+        ActiveTab = tab,
+        PendingCount = pendingReports.Count(),
+        ApprovedCount = approvedReports.Count(),
+        RejectedCount = rejectedReports.Count(),
+
+        Reports = selectedReports
+            .OrderByDescending(r => r.CreatedAt)
+            .Select(report => new AdminReportListItemViewModel
             {
                 Id = report.Id,
                 Title = report.Title,
-                Description = report.Description,
                 CreatedAt = report.CreatedAt,
                 ReporterEmail = report.ReportedByUser?.Email ?? string.Empty,
-                Latitude = report.Latitude,
-                Longitude = report.Longitude,
-                Status = report.Status.ToString(),
-                ReviewedAt = report.ReviewedAt,
-                RejectionReason = report.RejectionReason,
-                PhotoPath = report.PhotoPath,
                 Categories = report.Categories.Select(MapCategory).ToList()
-            };
+            })
+            .ToList()
+    };
 
-            return View(model);
-        }
+    return View(model);
+}
+        public async Task<IActionResult> Details(int id)
+{
+    var report = await _issueReportService.GetByIdAsync(id);
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Approve(int id)
-        {
-            var approved = await _issueReportService.ApproveAsync(id);
+    if (report == null)
+    {
+        return NotFound();
+    }
 
-            SetMessage(approved, "Report approved.");
+    var notifications = await _issueReportService.GetNotificationsAsync(id);
 
-            return RedirectToAction(nameof(Index));
-        }
+    var model = new AdminReportDetailsViewModel
+    {
+        Id = report.Id,
+        Title = report.Title,
+        Description = report.Description,
+        CreatedAt = report.CreatedAt,
+        ReporterEmail = report.ReportedByUser?.Email ?? string.Empty,
+        Latitude = report.Latitude,
+        Longitude = report.Longitude,
+        Status = report.Status.ToString(),
+        ReviewedAt = report.ReviewedAt,
+        RejectionReason = report.RejectionReason,
+        PhotoPath = report.PhotoPath,
+        Categories = report.Categories.Select(MapCategory).ToList(),
+        Notifications = notifications
+    };
+
+    return View(model);
+}
+        
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Approve(int id)
+{
+    var result = await _issueReportService.ApproveAsync(id);
+
+    if (!result.Approved)
+    {
+        TempData["Message"] =
+            "This report was not found or was already reviewed.";
+
+        TempData["MessageType"] = "warning";
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    if (result.FailedNotifications > 0)
+    {
+        TempData["Message"] =
+            $"Report approved, but {result.FailedNotifications} email(s) could not be sent.";
+
+        TempData["MessageType"] = "warning";
+    }
+    else
+    {
+        TempData["Message"] = "Report approved successfully.";
+        TempData["MessageType"] = "success";
+    }
+
+    return RedirectToAction(nameof(Details), new { id });
+}
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -108,5 +156,7 @@ namespace UrbanHazardMap.Controllers
                 InstitutionName = category.Institution?.Name ?? string.Empty
             };
         }
+
+        
     }
 }

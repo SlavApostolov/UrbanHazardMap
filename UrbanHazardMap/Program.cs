@@ -26,6 +26,7 @@ namespace UrbanHazardMap
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IIssueReportService, IssueReportService>();
+            builder.Services.AddScoped<IReportNotificationService,ReportNotificationService>();
             builder.Services.AddScoped<IPhotoStorageService,PhotoStorageService>();
             builder.Services.Configure<EmailSettings>(
     builder.Configuration.GetSection("Email"));

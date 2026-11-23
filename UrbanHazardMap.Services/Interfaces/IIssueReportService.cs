@@ -22,8 +22,10 @@ namespace UrbanHazardMap.Services
 
         Task<int> CreateAsync(string title, string description, double latitude, double longitude, IEnumerable<int> categoryIds, string? userId,string? photoPath = null);
 
-        Task<bool> ApproveAsync(int id);
+        Task<ApprovalResult> ApproveAsync(int id);
 
         Task<bool> RejectAsync(int id, string? reason);
+
+        Task<List<ReportNotification>> GetNotificationsAsync(int reportId);
     }
 }

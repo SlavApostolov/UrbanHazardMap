@@ -1,63 +1,218 @@
-@using UrbanHazardMap.ViewModels
-@model IEnumerable<AdminReportListItemViewModel>
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
-}
+@using UrbanHazardMap.ViewModels
+@model AdminReportsDashboardViewModel
 
 @{
-    ViewData["Title"] = "Pending Reports";
+    ViewData["Title"] = "Report Management";
+    var isPending = Model.ActiveTab == "pending";
 }
 
-<h2 class="mb-1">Pending Reports</h2>
-<p class="text-muted mb-4">Reports waiting for a moderator's decision.</p>
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/admin.css"
+          asp-append-version="true" />
+}
 
-@if (TempData["Message"] is string message)
-{
-    <div class="alert alert-@(TempData["MessageType"] ?? "info") alert-dismissible fade show" role="alert">
-        @message
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="admin-dashboard">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Report Management</h2>
+            <p class="text-muted mb-0">
+                Review reported hazards and monitor institution notifications.
+            </p>
+        </div>
+        <span class="badge bg-primary fs-6 p-3">
+            Administration
+        </span>
     </div>
-}
 
-@if (!Model.Any())
-{
-    <div class="alert alert-info">There are no pending reports.</div>
-}
-else
-{
-    <div class="table-responsive">
-        <table class="table table-hover align-middle">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Categories</th>
-                    <th>Reporter</th>
-                    <th>Created (UTC)</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var report in Model)
-                {
-                    <tr>
-                        <td>@report.Title</td>
-                        <td>
-                            @foreach (var category in report.Categories)
+    <!-- Summary cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted small mb-2">
+                        Pending Reports
+                    </div>
+                    <h2 class="fw-bold mb-1">@Model.PendingCount</h2>
+                    <span class="text-warning small">
+                        Awaiting review
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted small mb-2">
+                        Approved Reports
+                    </div>
+                    <h2 class="fw-bold mb-1">@Model.ApprovedCount</h2>
+                    <span class="text-success small">
+                        Successfully reviewed
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted small mb-2">
+                        Rejected Reports
+                    </div>
+                    <h2 class="fw-bold mb-1">@Model.RejectedCount</h2>
+                    <span class="text-danger small">
+                        Declined reports
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link @(isPending ? "active" : "")"
+               asp-action="Index"
+               asp-route-tab="pending">
+                Pending Reports
+                <span class="badge bg-secondary ms-1">
+                    @Model.PendingCount
+                </span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @(!isPending ? "active" : "")"
+               asp-action="Index"
+               asp-route-tab="approved">
+                Approved Reports
+                <span class="badge bg-secondary ms-1">
+                    @Model.ApprovedCount
+                </span>
+            </a>
+        </li>
+    </ul>
+
+    @if (TempData["Message"] is string message)
+    {
+        <div class="alert alert-@(TempData["MessageType"] ?? "info") alert-dismissible fade show">
+            @message
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+        </div>
+    }
+
+    <!-- Reports table -->
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+
+            <h5 class="fw-semibold mb-3">
+                @(isPending ? "Pending Reports" : "Approved Reports")
+            </h5>
+
+            @if (!Model.Reports.Any())
+            {
+                <div class="admin-empty-state text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-inbox fs-1 text-muted"></i>
+                    </div>
+
+                    <h5>
+                        @(isPending
+                            ? "All caught up!"
+                            : "No approved reports yet")
+                    </h5>
+
+                    <p class="text-muted mb-0">
+                        @(isPending
+                            ? "There are no reports waiting for review."
+                            : "Approved reports will appear here after moderation.")
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Report</th>
+                                <th>Categories</th>
+                                <th>Reporter</th>
+                                <th>Created (UTC)</th>
+                                <th>Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var report in Model.Reports)
                             {
-                                <div>
-                                    <span class="category-dot" style="background-color: @category.Color"></span>@category.Title
-                                </div>
+                                <tr>
+                                    <td>
+                                        <strong>@report.Title</strong>
+                                        <div class="text-muted small">
+                                            #@report.Id
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        @foreach (var category in report.Categories)
+                                        {
+                                            <div class="mb-1">
+                                                <span class="category-dot"
+                                                      style="background-color: @category.Color">
+                                                </span>
+                                                @category.Title
+                                            </div>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @(string.IsNullOrEmpty(report.ReporterEmail)
+                                            ? "Unknown"
+                                            : report.ReporterEmail)
+                                    </td>
+
+                                    <td class="text-nowrap">
+                                        @report.CreatedAt.ToUniversalTime().ToString("yyyy-MM-dd HH:mm")
+                                    </td>
+
+                                    <td>
+                                        @if (isPending)
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                Pending
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">
+                                                Approved
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="text-end">
+                                        <a asp-action="Details"
+                                           asp-route-id="@report.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            @(isPending ? "Review" : "View Details")
+                                        </a>
+                                    </td>
+                                </tr>
                             }
-                        </td>
-                        <td>@(string.IsNullOrEmpty(report.ReporterEmail) ? "Unknown" : report.ReporterEmail)</td>
-                        <td>@report.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
-                        <td class="text-end">
-                            <a class="btn btn-sm btn-outline-success" asp-action="Details" asp-route-id="@report.Id">Review</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
     </div>
-}
+</div>
