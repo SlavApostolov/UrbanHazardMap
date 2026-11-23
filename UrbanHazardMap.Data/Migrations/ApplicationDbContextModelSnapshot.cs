@@ -380,6 +380,39 @@ namespace UrbanHazardMap.Data.Migrations
                     b.ToTable("ReportConfirmations");
                 });
 
+            modelBuilder.Entity("UrbanHazardMap.Data.Models.ReportNotification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Error")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int>("InstitutionId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsSuccessful")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("IssueReportId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InstitutionId");
+
+                    b.HasIndex("IssueReportId");
+
+                    b.ToTable("ReportNotifications");
+                });
+
             modelBuilder.Entity("UrbanHazardMap.Data.Models.VolunteerEvent", b =>
                 {
                     b.Property<int>("Id")
@@ -521,6 +554,25 @@ namespace UrbanHazardMap.Data.Migrations
                     b.Navigation("IssueReport");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("UrbanHazardMap.Data.Models.ReportNotification", b =>
+                {
+                    b.HasOne("UrbanHazardMap.Data.Models.Institution", "Institution")
+                        .WithMany()
+                        .HasForeignKey("InstitutionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("UrbanHazardMap.Data.Models.IssueReport", "IssueReport")
+                        .WithMany()
+                        .HasForeignKey("IssueReportId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Institution");
+
+                    b.Navigation("IssueReport");
                 });
 
             modelBuilder.Entity("UrbanHazardMap.Data.Models.VolunteerEvent", b =>
